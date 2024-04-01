@@ -1,21 +1,47 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet,TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import Title from '../components/title';
+import { useAuth } from '../context/authContext';
 
 const Login = ({ navigation }) => {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Implement login logic here
-    console.log('Login button pressed');
-    navigation.navigate('Home')
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+      const data = await response.json();
+      const userData = data.user;
+      console.log(data.user);
+      // If login is successful, navigate to home screen
+      if (response.ok) {
+        login(userData);
+        navigation.navigate('Home');
+      } else {
+        // If there's an error, display a message to the user
+        console.error('Error logging in:', error.message); // Corrected to error.message
+        // You can display an alert or set a state to show an error message on the UI
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      // Display an error message or alert to the user
+      navigation.navigate('ErrorPage');
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Title/>
-      {/* <Text>Login Screen</Text> */}
+      <Title />
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -31,7 +57,10 @@ const Login = ({ navigation }) => {
       />
       <Button title="Login" onPress={handleLogin} />
       <View style={styles.registerContainer}>
-        <Text>Don't have any account? </Text><TouchableOpacity onPress={() => navigation.navigate('Register')}><Text style={styles.registerButton}>Register</Text></TouchableOpacity>
+        <Text>Don't have an account? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.registerButton}>Register</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -53,13 +82,12 @@ const styles = StyleSheet.create({
   },
   registerContainer: {
     flexDirection: 'row',
-    marginTop: 20
+    marginTop: 20,
   },
   registerButton: {
-    marginLeft: 5, // Adjust spacing between text and button if needed
-    color: 'blue', // Change color of the login button
-    // textDecorationLine: 'underline' // Add underline to the login button
-  }
+    marginLeft: 5,
+    color: 'blue',
+  },
 });
 
 export default Login;

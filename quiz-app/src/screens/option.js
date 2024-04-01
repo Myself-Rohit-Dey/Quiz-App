@@ -1,17 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Image, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Title from '../components/title';
+import { useAuth } from '../context/authContext';
 
 const Option = ({ navigation }) => {
-  const [amount, setAmount] = useState('10');
-  const [category, setCategory] = useState('31');
-  const [difficulty, setDifficulty] = useState('medium');
-  const [type, setType] = useState('multiple');
+  const [amount, setAmount] = useState('3');
+  const [category, setCategory] = useState('1');
+  const [difficulty, setDifficulty] = useState('EASY');
+  const [quizId, setQuizId] = useState(null);
+  // const [type, setType] = useState('multiple');
+  const {user} = useAuth();
 
-  const startQuiz = () => {
-    navigation.navigate('Quiz', { amount, category, difficulty, type });
+  const createQuiz = async () => {
+    try {
+      let categoryName;
+      switch (category) {
+        case '1':
+          categoryName = 'HTML';
+          break;
+        case '2':
+          categoryName = 'CSS';
+          break;
+        case '3':
+          categoryName = 'JavaScript';
+          break;
+        default:
+          categoryName = 'Other';
+          break;
+      }
+      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/quiz/create-quiz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          title_id: category,
+          title: categoryName,
+          no_of_question: parseInt(amount),
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to create quiz');
+      }
+      const data = await response.json();
+      setQuizId(data.quizId);
+      console.log(data);
+    } catch (error) {
+      console.error('Error creating quiz:', error);
+      // Handle error
+    }
   };
+  
+  const startQuiz = () => {
+    createQuiz(); // No need to await here
+  };
+  
+  // Use useEffect to trigger navigation when quizId changes
+  useEffect(() => {
+    if (quizId) {
+      navigation.navigate('Quiz', { quizId, difficulty, amount });
+    }
+  }, [quizId, navigation]);
 
   return (
     <ScrollView style={styles.container}>
@@ -28,40 +79,35 @@ const Option = ({ navigation }) => {
             />
             </View>
         </View> */}
-        <View style={styles.inputContainer}>
-            <Text>Number of Questions:</Text>
-            <TextInput
-            style={styles.input}
-            value={amount}
-            onChangeText={setAmount}
-            keyboardType="numeric"
-            placeholder="Enter number of questions"
-            />
-        </View>
-        <View style={styles.inputContainer}>
+        <View style={styles.pickerContainer}>
             <Text>Category:</Text>
+            <View style={styles.picker}>
             <Picker
             selectedValue={category}
-            style={styles.picker}
             onValueChange={(itemValue) => setCategory(itemValue)}
             >
-            <Picker.Item label="General Knowledge" value="31" />
-            <Picker.Item label="Entertainment: Film" value="32" />
+            <Picker.Item label="HTML" value="1" />
+            <Picker.Item label="CSS" value="2" />
+            <Picker.Item label="JAVASCRIPT" value="3" />
+            
+
             </Picker>
+            </View>
         </View>
-        <View style={styles.inputContainer}>
+        <View style={styles.pickerContainer}>
             <Text>Difficulty:</Text>
+            <View style={styles.picker}>
             <Picker
             selectedValue={difficulty}
-            style={styles.picker}
             onValueChange={(itemValue) => setDifficulty(itemValue)}
             >
-            <Picker.Item label="Easy" value="easy" />
-            <Picker.Item label="Medium" value="medium" />
-            <Picker.Item label="Hard" value="hard" />
+            <Picker.Item label="Easy" value="EASY" />
+            <Picker.Item label="Medium" value="MEDIUM" />
+            <Picker.Item label="Hard" value="HARD" />
             </Picker>
+            </View>
         </View>
-        <View style={styles.inputContainer}>
+        {/* <View style={styles.inputContainer}>
             <Text>Type:</Text>
             <Picker
             selectedValue={type}
@@ -71,6 +117,17 @@ const Option = ({ navigation }) => {
             <Picker.Item label="Multiple Choice" value="multiple" />
             <Picker.Item label="True/False" value="boolean" />
             </Picker>
+        </View> */}
+        <View style={styles.pickerContainer}>
+            <Text>Number of Questions:</Text>
+            <View style={styles.input}>
+            <TextInput
+            value={amount}
+            onChangeText={setAmount}
+            keyboardType="numeric"
+            placeholder="Enter number of questions"
+            />
+            </View>
         </View>
         </View>
       <TouchableOpacity onPress={startQuiz} style={styles.button}>
@@ -118,18 +175,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
+    flex:1,
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginTop: 5,
+    marginLeft: 10
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   picker: {
+    flex:1,
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 5,
     marginTop: 5,
+    marginLeft: 10
   },
   button: {
     backgroundColor: '#F8961E',

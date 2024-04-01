@@ -1,9 +1,9 @@
 // Title.js
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { useRoute } from '@react-navigation/native';
 
-const Title = () => {
+const Title = ({ firstName }) => {
   const route = useRoute();
 
   // Conditional rendering based on route name
@@ -16,11 +16,29 @@ const Title = () => {
       case 'Register':
         return 'Register';
       case 'Home':
-        return 'Welcome User';
+        // return (
+        //   <View>
+        //   <Text>{`Welcome ${firstName}`}</Text>
+        //   <View style={styles.imageOverlay}>
+        //         <Image
+        //           source={{ uri: 'https://ugokawaii.com/wp-content/uploads/2022/12/quiz-time.gif' }}
+        //           style={styles.cardImage}
+        //           resizeMode="cover"
+        //         />
+        //   </View>
+        //   </View>
+        //   );
+        if(firstName){ 
+             return `Welcome ${firstName} 🕵🏻`
+        }else{
+            return 'Quiz-App'
+        }
       case 'Option':
         return 'Select Options';
       case 'Result':
         return 'Result';
+      case 'Admin':
+        return 'Admin';
     }
   };
 
@@ -44,4 +62,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
+  
 });
