@@ -66,7 +66,7 @@ const Home = ({ navigation, route }) => {
     fetchQuizzes();
   }, [user]);
 
-  const fetchQuizzes = () =>{
+  const fetchQuizzes = () => {
     if (user) {
       fetch(
         `https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/result/${user.id}`
@@ -79,7 +79,7 @@ const Home = ({ navigation, route }) => {
           console.error("Error fetching data:", error);
         });
     }
-  }
+  };
 
   const onRefresh = () => {
     // setRefreshing(true);
@@ -173,54 +173,73 @@ const Home = ({ navigation, route }) => {
               <Text style={styles.buttonText}>Start</Text>
             </TouchableOpacity>
             <View style={styles.cardContainer}>
-              {quizzes.map((quiz, index) => (
-                <View key={index} style={styles.card}>
-                  {/* Rounded rectangle container for the topic */}
-                  <View style={styles.topicContainer}>
-                    <Text style={styles.topicText}>{quiz.title}</Text>
-                  </View>
-                  {/* Rest of the card content */}
-                  <View
-                    style={{
-                      justifyContent: "space-between",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      paddingHorizontal: 20,
-                      paddingTop: 40,
-                    }}
-                  >
-                    <Text style={{ color: "white", fontWeight: "800" }}>
-                      Score
-                    </Text>
-                    <Text style={{ color: "white", fontWeight: "800" }}>
-                      {quiz.total_marks}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      alignItems: "flex-end",
-                      paddingTop: 10,
-                      paddingRight: 20,
-                    }}
-                  >
-                    <Text style={{ color: "white" }}>Time: {quiz.time}</Text>
-                  </View>
-                  <View style={styles.imageOverlay}>
-                    <Image
-                      source={{
-                        uri: "https://lordicon.com/icons/wired/outline/1103-confetti.gif",
-                      }}
-                      style={styles.cardImage}
-                      resizeMode="cover"
-                    />
-                  </View>
+              <>
+                {quizzes.length > 0 ? (
+                  quizzes.map((quiz, index) => (
+                    <View key={index} style={styles.card}>
+                      {/* Rounded rectangle container for the topic */}
+                      <View style={styles.topicContainer}>
+                        <Text style={styles.topicText}>{quiz.title}</Text>
+                      </View>
+                      {/* Rest of the card content */}
+                      <View
+                        style={{
+                          justifyContent: "space-between",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingHorizontal: 20,
+                          paddingTop: 40,
+                        }}
+                      >
+                        <Text style={{ color: "white", fontWeight: "800" }}>
+                          Score
+                        </Text>
+                        <Text style={{ color: "white", fontWeight: "800" }}>
+                          {quiz.total_marks}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          alignItems: "flex-end",
+                          paddingTop: 10,
+                          paddingRight: 20,
+                        }}
+                      >
+                        <Text style={{ color: "white" }}>
+                          Time: {quiz.time}
+                        </Text>
+                      </View>
+                      <View style={styles.imageOverlay}>
+                        <Image
+                          source={{
+                            uri: "https://lordicon.com/icons/wired/outline/1103-confetti.gif",
+                          }}
+                          style={styles.cardImage}
+                          resizeMode="cover"
+                        />
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <Text style={{ paddingVertical: 40 }}>
+                    No quizzes available
+                  </Text>
+                )}
+              </>
+              {/* {quizzes.length > 0 && ( */}
+                <View
+                  style={{
+                    padding: 10,
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    marginBottom: 20,
+                  }}
+                >
+                  <TouchableOpacity onPress={onRefresh}>
+                    <Text>Refresh</Text>
+                  </TouchableOpacity>
                 </View>
-              ))}
-              <View style={{padding:10, borderWidth: 1, borderRadius: 10, marginBottom:20 }}>
-                <TouchableOpacity onPress={onRefresh}>
-                  <Text>Refresh</Text>
-                </TouchableOpacity>
-              </View>
+              {/* )} */}
 
               <View style={styles.bottom}>
                 <TouchableOpacity style={styles.button2} onPress={handleLogOut}>
@@ -371,18 +390,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   topicContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: -10,
     left: -10,
-    backgroundColor: '#F8961E',
+    backgroundColor: "#F8961E",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderTopLeftRadius: 8,
     borderBottomRightRadius: 8,
   },
   topicText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
 
   // Secondary styles

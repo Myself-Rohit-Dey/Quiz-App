@@ -19,7 +19,7 @@ const ManageQuestions = () => {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch('https://7406-2402-3a80-196b-fc9b-44eb-26a5-afab-83ef.ngrok-free.app/admin/get-question-answer');
+      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/admin/get-question-answer');
       if (!response.ok) {
         throw new Error('Failed to fetch questions');
       }
@@ -45,7 +45,7 @@ const ManageQuestions = () => {
 
   const handleAddQuestion = async () => {
     try {
-      const response = await fetch('https://7406-2402-3a80-196b-fc9b-44eb-26a5-afab-83ef.ngrok-free.app/admin/set-question', {
+      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/admin/set-question', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

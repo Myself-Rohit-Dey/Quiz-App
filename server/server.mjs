@@ -1,18 +1,22 @@
 import express from "express";
 import mysql from "mysql2";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
 
 const app = express();
 const port = 3000;
 
+dotenv.config();
+
 // Create MySQL connection
 const mysqlConnection = mysql.createConnection({
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'mysql',
-  database: 'quiz'
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
 });
+
 
 // Connect to MySQL
 mysqlConnection.connect((err) => {
@@ -118,9 +122,9 @@ app.post("/login", (req, res) => {
 app.get('/result/:userId', (req, res) => {
   const userId = req.params.userId;
   // Query to fetch quizzes for a specific user
-  const query = `SELECT * FROM Quiz WHERE (user_id, title_id, id) IN 
+  const query = `SELECT * FROM quiz WHERE (user_id, title_id, id) IN 
   (SELECT user_id, title_id, MAX(id) AS max_id 
-   FROM Quiz 
+   FROM quiz 
    WHERE user_id = ? 
    GROUP BY user_id, title_id)`;
 
@@ -215,7 +219,7 @@ app.post("/quiz/create-quiz", (req, res) => {
     const { user_id, title_id, title, no_of_question } = req.body;
 
     // Insert the quiz data into the Quiz table
-    const insertQuizSql = "INSERT INTO Quiz (user_id, title_id, title, no_of_question) VALUES (?, ?, ?, ?)";
+    const insertQuizSql = "INSERT INTO quiz (user_id, title_id, title, no_of_question) VALUES (?, ?, ?, ?)";
     mysqlConnection.query(insertQuizSql, [user_id, title_id, title, no_of_question], (err, result) => {
       if (err) {
         console.error('Error inserting quiz data:', err);
@@ -245,7 +249,7 @@ app.get("/quiz/questions/:quizId", (req, res) => {
     FROM (
     SELECT qq.id, qq.question, qq.answer_id, qq.answer_text, qq.explanation, qq.difficulty, qq.marks
     FROM quiz_question qq
-    JOIN Quiz q ON qq.title_id = q.title_id -- Join with quiz table to get title_id
+    JOIN quiz q ON qq.title_id = q.title_id -- Join with quiz table to get title_id
     WHERE q.id = ? AND qq.difficulty = ? -- Use quiz id instead of title_id
     ORDER BY RAND() -- Randomize the order of questions
     LIMIT ?
@@ -306,7 +310,7 @@ app.post("/quiz/update-result/:quizId", (req, res) => {
     const {totalTime, totalScore } = req.body;
 
     // Update the quiz data in the Quiz table
-    const updateQuizSql = "UPDATE Quiz SET total_marks = ?, time = ? WHERE id = ?";
+    const updateQuizSql = "UPDATE quiz SET total_marks = ?, time = ? WHERE id = ?";
     mysqlConnection.query(updateQuizSql, [totalScore, totalTime, quizId], (err, result) => {
       if (err) {
         console.error('Error updating quiz data:', err);

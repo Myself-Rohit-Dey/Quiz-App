@@ -20,7 +20,7 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('https://7406-2402-3a80-196b-fc9b-44eb-26a5-afab-83ef.ngrok-free.app/admin/get-users');
+      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/admin/get-users');
       if (!response.ok) {
         throw new Error('Failed to fetch users');
       }
@@ -48,7 +48,7 @@ const ManageUsers = () => {
 
   const handleAddUser = async () => {
     try {
-      const response = await fetch('https://7406-2402-3a80-196b-fc9b-44eb-26a5-afab-83ef.ngrok-free.app/register', {
+      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

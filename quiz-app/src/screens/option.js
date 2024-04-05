@@ -38,6 +38,7 @@ const Option = ({ navigation }) => {
           user_id: user.id,
           title_id: category,
           title: categoryName,
+          difficulty:difficulty,
           no_of_question: parseInt(amount),
         }),
       });

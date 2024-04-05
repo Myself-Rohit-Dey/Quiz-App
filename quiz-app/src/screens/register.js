@@ -23,7 +23,7 @@ const Register = ({ navigation }) => {
           email: email,
           password: password,
           gender: gender, // Include the selected gender value
-          role: 'USER'
+          role: 'ADMIN'
         }),
       });
       const data = await response.json();
