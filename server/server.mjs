@@ -326,6 +326,36 @@ app.post("/quiz/update-result/:quizId", (req, res) => {
 });
 
 //Admin
+app.get("/admin/analytics/get-all-quizzes", (req, res) => {
+  try {
+    // Query to fetch all users
+    const query = `SELECT * FROM quiz ORDER BY id DESC`;
+
+    // Execute the query
+    mysqlConnection.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching users:', err);
+        return res.status(500).json({
+          success: false,
+          message: "Error fetching users"
+        });
+      }
+
+      // Send the results back as JSON
+      res.status(200).json({
+        success: true,
+        quizzes: results
+      });
+    });
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching users"
+    });
+  }
+});
+
 app.get("/admin/get-users", (req, res) => {
   try {
     // Query to fetch all users

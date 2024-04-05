@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Title from "../components/title";
 import { useAuth } from "../context/authContext";
+// import QuizService from "../services/api";
 
 const Home = ({ navigation, route }) => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -69,7 +70,7 @@ const Home = ({ navigation, route }) => {
   const fetchQuizzes = () => {
     if (user) {
       fetch(
-        `https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/result/${user.id}`
+        `https://quiz-app-react-native.vercel.app/result/${user.id}`
       )
         .then((response) => response.json())
         .then((data) => {

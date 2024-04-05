@@ -29,7 +29,7 @@ const Option = ({ navigation }) => {
           categoryName = 'Other';
           break;
       }
-      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/quiz/create-quiz', {
+      const response = await fetch('https://quiz-app-react-native.vercel.app/quiz/create-quiz', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

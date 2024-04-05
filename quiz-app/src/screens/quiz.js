@@ -67,7 +67,7 @@ const Quiz = ({ navigation, route }) => {
   const fetchQuiz = async () => {
     try {
       // Construct the URL for fetching quiz questions
-      const apiUrl = `https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/quiz/questions/${quizId}?difficulty=${difficulty}&amount=${amount}`;
+      const apiUrl = `https://quiz-app-react-native.vercel.app/quiz/questions/${quizId}?difficulty=${difficulty}&amount=${amount}`;
 
       const res = await fetch(apiUrl);
       if (!res.ok) {
@@ -84,7 +84,7 @@ const Quiz = ({ navigation, route }) => {
   const submitQuiz = async () => {
     console.log(totalScore,totalTime);
     try {
-      const response = await fetch(`https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/quiz/update-result/${quizId}`, {
+      const response = await fetch(`https://quiz-app-react-native.vercel.app/quiz/update-result/${quizId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

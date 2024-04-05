@@ -20,7 +20,7 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/admin/get-users');
+      const response = await fetch('https://quiz-app-react-native.vercel.app/admin/get-users');
       if (!response.ok) {
         throw new Error('Failed to fetch users');
       }
@@ -48,7 +48,7 @@ const ManageUsers = () => {
 
   const handleAddUser = async () => {
     try {
-      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/register', {
+      const response = await fetch('https://quiz-app-react-native.vercel.app/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

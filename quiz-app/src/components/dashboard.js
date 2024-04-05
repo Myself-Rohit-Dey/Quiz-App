@@ -5,6 +5,21 @@ import { useAuth } from "../context/authContext";
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("");
+  const [quizzes, setQuizzes] = useState([]);
+
+  const getAllQuizzes = async () => {
+    try {
+      const response = await fetch("http://your-api-url/admin/analytics/get-quizzes");
+      if (!response.ok) {
+        throw new Error("Failed to fetch quizzes");
+      }
+      const data = await response.json();
+      setQuizzes(data.quizzes);
+    } catch (error) {
+      console.error("Error fetching quizzes:", error);
+    }
+  };
+
 
   const { user } = useAuth();
   const renderSection = () => {
@@ -13,8 +28,8 @@ const Dashboard = () => {
       //   return <ProfileSection />;
       // case "Settings":
       //   return <SettingsSection />;
-      case "Analytics":
-        return <AnalyticsSection />;
+      case "Quizzes":
+        return <QuizzesSection />;
       case "Messages":
         return <MessagesSection />;
       // case "Tasks":
@@ -33,14 +48,21 @@ const Dashboard = () => {
     </TouchableOpacity>
   );
 
-  const AnalyticsSection = () => (
+  const QuizzesSection = () => (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        {/* {renderBackButton()} */}
-        <Text style={styles.headerTitle}>Analytics Section</Text>
+        <Text style={styles.headerTitle}>Quizzes Section</Text>
       </View>
       <View style={styles.contentContainer}>
-        <Text style={styles.contentText}>Analytics Content Goes Here</Text>
+        {quizzes.map((quiz) => (
+          <View key={quiz.id} style={styles.quizContainer}>
+            <Text>Title: {quiz.title}</Text>
+            <Text>Difficulty: {quiz.difficulty}</Text>
+            <Text>Number of Questions: {quiz.no_of_question}</Text>
+            <Text>Total Marks: {quiz.total_marks}</Text>
+            <Text>Time: {quiz.time}</Text>
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -89,9 +111,9 @@ const Dashboard = () => {
     </View> */}
       <View style={styles.featuresContainer}>
         <PressableFeatureBox
-          name="Analytics"
+          name="Quizzes"
           icon="stats-chart"
-          onPress={() => setActiveSection("Analytics")}
+          onPress={() => setActiveSection("Quizzes")}
         />
         <PressableFeatureBox
           name="Messages"
@@ -99,9 +121,9 @@ const Dashboard = () => {
           onPress={() => setActiveSection("Messages")}
         />
       </View>
-      {/* <Text>
+      <Text>
       <View style={styles.container}>{renderSection()}</View>;
-      </Text> */}
+      </Text>
     </View>
   );
 };

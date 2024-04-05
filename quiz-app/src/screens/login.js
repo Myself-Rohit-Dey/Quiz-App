@@ -10,7 +10,7 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://9f41-2402-3a80-196c-777a-b1d9-85d8-92de-85ff.ngrok-free.app/login', {
+      const response = await fetch('https://quiz-app-react-native.vercel.app/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
