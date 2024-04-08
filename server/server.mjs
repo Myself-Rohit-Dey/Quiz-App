@@ -464,7 +464,7 @@ app.post("/admin/set-question", (req, res) => {
 app.get('/admin/get-question-answer', (req, res) => {
   try {
     // SQL query to fetch all questions
-    const query = 'SELECT * FROM quiz_question';
+    const query = 'SELECT * FROM quiz_question ORDER BY marks ASC';
 
     // Execute the SQL query
     mysqlConnection.query(query, (err, results) => {
