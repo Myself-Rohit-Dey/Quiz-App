@@ -71,6 +71,7 @@ const ManageUsers = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={[styles.title,{marginBottom:20}]}>Total Users: {users.length}</Text>
       <View style={styles.header}>
         <Text style={styles.title}>User List</Text>
         <TouchableOpacity onPress={toggleModal}>
@@ -81,6 +82,7 @@ const ManageUsers = () => {
         <View key={user.id} style={styles.userItem}>
           <Text style={styles.userName}>{user.first_name} {user.last_name}</Text>
           <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userRole}>{user.role}</Text>
         </View>
       ))}
       <Modal
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    paddingRight:10
+    paddingRight:10,
   },
   userItem: {
     marginBottom: 10,
@@ -168,12 +170,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-    width:'50%'
+    width:'40%'
   },
   userEmail: {
     fontSize: 14,
     color: '#555',
-    width:'50%'
+    width:'45%'
+  },
+  userRole: {
+    fontSize: 14,
+    color: '#555',
+    width:'20%'
   },
   modalContainer: {
     flex: 1,

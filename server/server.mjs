@@ -74,14 +74,18 @@ app.post("/register", async (req, res) => {
     });
   }
 });
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const query = "SELECT * from user WHERE email = ?";
+    const query = "SELECT * FROM user WHERE email = ?";
 
     mysqlConnection.query(query, [email], async (err, results) => {
       if (err) {
-        throw err;
+        console.error('Error querying database:', err);
+        return res.status(500).json({
+          success: false,
+          message: "Error querying database"
+        });
       }
 
       if (results.length > 0) {
@@ -92,31 +96,33 @@ app.post("/login", (req, res) => {
         if (isPasswordValid) {
           // If passwords match, return the user object
           delete user.password;
-          res.status(200).json({
+          return res.status(200).json({
             success: true,
             message: "Login successful",
             user: user
           });
         } else {
-          res.status(401).json({
+          return res.status(401).json({
             success: false,
             message: "Invalid email or password"
           });
         }
       } else {
-        res.status(401).json({
+        return res.status(401).json({
           success: false,
-          message: "Invalid email or password"
+          message: "No user found"
         });
       }
     });
   } catch (err) {
-    res.status(500).json({
+    console.error('Error logging user:', err);
+    return res.status(500).json({
       success: false,
-      message: err.message,
+      message: "Error logging user"
     });
   }
 });
+
 
 //Home
 app.get('/result/:userId', (req, res) => {

@@ -1,6 +1,7 @@
 // MyStack.js
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAuth } from '../context/authContext';
+import { Toast } from 'react-native-toast-message'; 
 // import Start from '../screens/start';
 import Login from '../screens/login';
 import Register from '../screens/register';

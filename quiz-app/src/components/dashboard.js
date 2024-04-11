@@ -298,7 +298,7 @@ const Dashboard = () => {
                   "Time",
                 ]}
                 style={styles.head}
-                textStyle={styles.text}
+               
               />
               {quizzes.map((quiz) => {
                   const [hours, minutes, seconds] = quiz.time.split(':');
@@ -312,7 +312,7 @@ const Dashboard = () => {
                         quiz.total_marks.toString(),
                         `${minutes}m ${seconds}s`,
                       ]}
-                      textStyle={styles.text}
+                     
                     />
                   );
                 })}
@@ -370,5 +370,4 @@ const styles = StyleSheet.create({
   },
   head: { height: 70, backgroundColor: "#f1f8ff" },
   headText: { margin: 6, fontWeight: "bold", width: "20%" },
-  text: { margin: 6, textAlign: "center", width: 54 },
 });
