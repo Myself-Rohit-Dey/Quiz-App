@@ -43,6 +43,7 @@ const Option = ({ navigation }) => {
           total_marks: 0,
           time: 0
         }),
+        
       });
       if (!response.ok) {
         throw new Error('Failed to create quiz');
@@ -91,8 +92,7 @@ const Option = ({ navigation }) => {
             >
             <Picker.Item label="HTML" value="1" />
             <Picker.Item label="CSS" value="2" />
-            <Picker.Item label="JAVASCRIPT" value="3" />
-            
+            <Picker.Item label="JAVASCRIPT" value="3" />  
 
             </Picker>
             </View>
