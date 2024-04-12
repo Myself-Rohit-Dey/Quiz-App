@@ -27,34 +27,45 @@ const Quiz = ({ navigation, route }) => {
   const [progress, setProgress] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
 
+  // State to manage whether the explanation modal is open or not
+  const [showExplanation, setShowExplanation] = useState(false);
+  //  const [currentQuestion, setCurrentQuestion] = useState(null);
+
+  // Function to toggle the explanation modal
+  const toggleExplanationModal = (question) => {
+    //  setCurrentQuestion(question);
+    setShowExplanation(!showExplanation);
+  };
+
   const [backgroundColorIndex, setBackgroundColorIndex] = useState(0);
   const backgroundColors = [
-    '#1507B0ff', // dark-blue-2
-    '#160FB1ff', // dark-blue
-    '#1718B3ff', // zaffre-2
-    '#1820B4ff', // zaffre
-    '#1A29B6ff', // international-klein-blue
-    '#1B31B7ff', // persian-blue-3
-    '#1C3AB9ff', // persian-blue-2
-    '#1D42BAff', // persian-blue
-    '#1E4ABCff', // violet-blue
-    '#1F53BDff', // sapphire
-    '#215BBFff', // tang-blue
-    '#2264C0ff', // denim
-    '#236CC2ff', // celtic-blue
-    '#2474C3ff', // french-blue
-    '#257DC5ff', // steel-blue-2
-    '#2685C6ff', // steel-blue
-    '#288EC8ff', // blue-ncs
-    '#2996C9ff', // celestial-blue
-    '#2A9FCBff', // blue-green
-    '#2BA7CCff', // pacific-cyan
+    "#1507B0ff", // dark-blue-2
+    "#160FB1ff", // dark-blue
+    "#1718B3ff", // zaffre-2
+    "#1820B4ff", // zaffre
+    "#1A29B6ff", // international-klein-blue
+    "#1B31B7ff", // persian-blue-3
+    "#1C3AB9ff", // persian-blue-2
+    "#1D42BAff", // persian-blue
+    "#1E4ABCff", // violet-blue
+    "#1F53BDff", // sapphire
+    "#215BBFff", // tang-blue
+    "#2264C0ff", // denim
+    "#236CC2ff", // celtic-blue
+    "#2474C3ff", // french-blue
+    "#257DC5ff", // steel-blue-2
+    "#2685C6ff", // steel-blue
+    "#288EC8ff", // blue-ncs
+    "#2996C9ff", // celestial-blue
+    "#2A9FCBff", // blue-green
+    "#2BA7CCff", // pacific-cyan
   ];
 
   const changeBackgroundColor = () => {
-    setBackgroundColorIndex((prevIndex) => (prevIndex + 1) % backgroundColors.length);
+    setBackgroundColorIndex(
+      (prevIndex) => (prevIndex + 1) % backgroundColors.length
+    );
   };
-
 
   let timeFactor = 1; // Default time factor for easy difficulty
   if (difficulty === "MEDIUM") {
@@ -82,18 +93,21 @@ const Quiz = ({ navigation, route }) => {
     }
   };
   const submitQuiz = async () => {
-    console.log(totalScore,totalTime);
+    console.log(totalScore, totalTime);
     try {
-      const response = await fetch(`https://quiz-app-react-native.vercel.app/quiz/update-result/${quizId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          totalTime: totalTime,
-          totalScore: totalScore,
-        }),
-      });
+      const response = await fetch(
+        `https://quiz-app-react-native.vercel.app/quiz/update-result/${quizId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            totalTime: totalTime,
+            totalScore: totalScore,
+          }),
+        }
+      );
       const data = await response.json();
       console.log(data);
       // If updating quiz result is successful
@@ -101,16 +115,16 @@ const Quiz = ({ navigation, route }) => {
         console.log(data);
       } else {
         // If there's an error, display a message to the user
-        console.error('Error:', data.message);
+        console.error("Error:", data.message);
         // You can display an alert or set a state to show an error message on the UI
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       // Display an error message or alert to the user
-      navigation.navigate('ErrorPage');
+      navigation.navigate("ErrorPage");
     }
   };
-  
+
   useEffect(() => {
     fetchQuiz();
     // setCurrentIndex(currentIndex+1);
@@ -212,7 +226,12 @@ const Quiz = ({ navigation, route }) => {
   }, [timeLeft, currentIndex]);
 
   return (
-    <View style={[styles.container, { backgroundColor: backgroundColors[backgroundColorIndex]}]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: backgroundColors[backgroundColorIndex] },
+      ]}
+    >
       <View
         style={{
           flexDirection: "row",
@@ -248,7 +267,7 @@ const Quiz = ({ navigation, route }) => {
           Reset
         </Text>
       </View>
-      <View style={{ paddingHorizontal: 20  }}>
+      <View style={{ paddingHorizontal: 20 }}>
         <ProgressBar
           progress={progress}
           color="#FFA500"
@@ -276,7 +295,12 @@ const Quiz = ({ navigation, route }) => {
           renderItem={({ item, index }) => (
             <View style={{ width, paddingHorizontal: 20 }}>
               <Text
-                style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10, color:'white' }}
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginBottom: 10,
+                  color: "white",
+                }}
               >
                 {item.question}
               </Text>
@@ -389,103 +413,120 @@ const Quiz = ({ navigation, route }) => {
               borderRadius: 10,
             }}
           >
-            {/*  */}
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                margin: 30,
-              }}
-            >
-              <Image
-                source={{
-                  uri: "https://lordicon.com/icons/wired/outline/1103-confetti.gif",
-                }}
-                style={{ height: 200, width: 250 }}
-                resizeMode="contain"
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: 30,
-                fontWeight: "800",
-                alignSelf: "center",
-                marginTop: 20,
-              }}
-            >
-              Total Score
-            </Text>
-            <Text
-              style={{
-                fontSize: 40,
-                fontWeight: "800",
-                alignSelf: "center",
-                marginTop: 10,
-                color: "green",
-              }}
-            >
-              {totalScore}
-            </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "600",
-                alignSelf: "center",
-                marginTop: 20,
-              }}
-            >
-              Time: {Math.floor(totalTime / 60)}:
-              {(totalTime % 60).toString().padStart(2, "0")}
-            </Text>
-            <View style={styles.actions}>
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(false);
-                  submitQuiz();
-                  navigation.navigate("Home");
+            {showExplanation ? (
+              // Explanation Modal Content
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: 30,
                 }}
               >
-                <Icon
-                  name="home-outline"
-                  size={30}
-                  color="black"
-                  style={styles.icon}
+                <Image
+                  source={{
+                    uri: "https://lordicon.com/icons/wired/outline/1103-confetti.gif",
+                  }}
+                  style={{ height: 200, width: 250 }}
+                  resizeMode="contain"
                 />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(false);
-                  reset();
-                  listRef.current.scrollToIndex({ animated: true, index: 0 });
-                  submitQuiz();
-                  // setModalVisible(false);
-                }}
-              >
-                <Icon
-                  name="reload-outline"
-                  size={30}
-                  color="black"
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
-            </View>
-            {/* <TouchableOpacity
-              style={{
-                alignSelf: "center",
-                height: 40,
-                padding: 10,
-                borderWidth: 1,
-                borderRadius: 10,
-                marginTop: 20,
-                marginBottom: 20,
-              }}
-              onPress={() => {
-                setModalVisible(false);
-                submitQuiz();
-              }}
-            >
-              <Text>Close</Text>
-            </TouchableOpacity> */}
+                <Text
+                  style={{
+                    fontSize: 30,
+                    fontWeight: "800",
+                    alignSelf: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  Total Score
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 40,
+                    fontWeight: "800",
+                    alignSelf: "center",
+                    marginTop: 10,
+                    color: "green",
+                  }}
+                >
+                  {totalScore}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "600",
+                    alignSelf: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  Time: {Math.floor(totalTime / 60)}:
+                  {(totalTime % 60).toString().padStart(2, "0")}
+                </Text>
+                <View style={styles.actions}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalVisible(false);
+                      submitQuiz();
+                      navigation.navigate("Home");
+                    }}
+                  >
+                    <Icon
+                      name="home-outline"
+                      size={30}
+                      color="black"
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalVisible(false);
+                      reset();
+                      listRef.current.scrollToIndex({
+                        animated: true,
+                        index: 0,
+                      });
+                      submitQuiz();
+                    }}
+                  >
+                    <Icon
+                      name="reload-outline"
+                      size={30}
+                      color="black"
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      toggleExplanationModal();
+                    }}
+                  >
+                    <Text>Explanation</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              // Question and Answer Modal Content
+              <View style={styles.explanationModal}>
+                <TouchableOpacity
+                  onPress={() => setShowExplanation(false)}
+                  style={{ position: "absolute", top: -10, left: 20 }}
+                >
+                  <Icon name="arrow-back-outline" size={30} color="black" />
+                </TouchableOpacity>
+                {questions.map((question, index) => (
+                  <View key={index}>
+                    <Text style={styles.explanationText}>
+                      Question: {question.question}
+                    </Text>
+                    <Text style={styles.explanationText}>
+                      Answer: {question.answer_text}
+                    </Text>
+                    <Text style={styles.explanationText}>
+                      Selected Option: {question.selectedOption}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         </View>
       </Modal>
@@ -515,6 +556,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   icon: {
+    padding: 10,
+  },
+  explanationModal: {
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+  },
+  explanationText: {
+    fontSize: 16,
+    marginBottom: 10,
     padding: 10,
   },
 });

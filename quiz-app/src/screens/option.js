@@ -40,6 +40,8 @@ const Option = ({ navigation }) => {
           title: categoryName,
           difficulty:difficulty,
           no_of_question: parseInt(amount),
+          total_marks: 0,
+          time: 0
         }),
       });
       if (!response.ok) {

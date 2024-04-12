@@ -222,11 +222,11 @@ app.get('/result/:userId', (req, res) => {
 // });
 app.post("/quiz/create-quiz", (req, res) => {
   try {
-    const { user_id, title_id, title, no_of_question } = req.body;
+    const { user_id, title_id, title, no_of_question,total_marks,time } = req.body;
 
     // Insert the quiz data into the Quiz table
-    const insertQuizSql = "INSERT INTO quiz (user_id, title_id, title, no_of_question) VALUES (?, ?, ?, ?)";
-    mysqlConnection.query(insertQuizSql, [user_id, title_id, title, no_of_question], (err, result) => {
+    const insertQuizSql = "INSERT INTO quiz (user_id, title_id, title, no_of_question, total_marks, time) VALUES (?, ?, ?, ?, ?, ?)";
+    mysqlConnection.query(insertQuizSql, [user_id, title_id, title, no_of_question, total_marks, time], (err, result) => {
       if (err) {
         console.error('Error inserting quiz data:', err);
         return res.status(500).json({ success: false, message: 'Failed to insert quiz data' });
