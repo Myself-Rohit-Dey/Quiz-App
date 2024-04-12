@@ -534,10 +534,10 @@ const Quiz = ({ navigation, route }) => {
                     <Text style={styles.explanationText}>
                       Question: {question.question}
                     </Text>
-                    <Text style={[styles.explanationText, {color:'green'}]}>
+                    <Text style={[{marginLeft:10, color:'green'}]}>
                       Answer: {question.answer_text}
                     </Text>
-                    <Text style={[styles.explanationText, { color: question.selectedOption === question.answer_id ? 'green' : 'red' }]}>
+                    <Text style={[{marginLeft:10, color: question.selectedOption === question.answer_id ? 'green' : 'red' }]}>
                       Selected Option: {question.options.find(option => option.option_id === question.selectedOption)?.option_text}
                     </Text>
                   </View>
@@ -582,8 +582,8 @@ const styles = StyleSheet.create({
   },
   explanationText: {
     fontSize: 16,
-    marginBottom: 10,
-    padding: 10,
+    marginTop: 20,
+    paddingHorizontal: 10,
   },
 });
 export default Quiz;

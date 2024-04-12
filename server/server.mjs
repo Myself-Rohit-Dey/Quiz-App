@@ -128,12 +128,13 @@ app.post("/login", async (req, res) => {
 app.get('/result/:userId', (req, res) => {
   const userId = req.params.userId;
   // Query to fetch quizzes for a specific user
-  const query = `SELECT * FROM quiz WHERE (user_id, title_id, id) IN 
-  (SELECT user_id, title_id, MAX(id) AS max_id 
-   FROM quiz 
-   WHERE user_id = ? 
-     AND time <> 0 -- Neglect rows where time equals 0
-   GROUP BY user_id, title_id)`;
+  const query = `SELECT * FROM quiz 
+  WHERE (user_id, title_id, id) IN 
+    (SELECT user_id, title_id, MAX(id) AS max_id 
+     FROM quiz 
+     WHERE user_id = ? 
+       AND time <> 0
+     GROUP BY user_id, title_id, difficulty)`;
 
   // Execute the query with the user ID as a parameter
   mysqlConnection.query(query, [userId], (err, results) => {
