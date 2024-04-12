@@ -132,6 +132,7 @@ app.get('/result/:userId', (req, res) => {
   (SELECT user_id, title_id, MAX(id) AS max_id 
    FROM quiz 
    WHERE user_id = ? 
+     AND time <> 0 -- Neglect rows where time equals 0
    GROUP BY user_id, title_id)`;
 
   // Execute the query with the user ID as a parameter

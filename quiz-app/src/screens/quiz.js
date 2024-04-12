@@ -28,11 +28,11 @@ const Quiz = ({ navigation, route }) => {
   const [totalTime, setTotalTime] = useState(0);
 
   // State to manage whether the explanation modal is open or not
-  const [showExplanation, setShowExplanation] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(true);
   //  const [currentQuestion, setCurrentQuestion] = useState(null);
 
   // Function to toggle the explanation modal
-  const toggleExplanationModal = (question) => {
+  const toggleExplanationModal = () => {
     //  setCurrentQuestion(question);
     setShowExplanation(!showExplanation);
   };
@@ -499,29 +499,46 @@ const Quiz = ({ navigation, route }) => {
                       toggleExplanationModal();
                     }}
                   >
-                    <Text>Explanation</Text>
+                    {/* <Text style={styles.icon}>Explanation</Text> */}
+                    <Icon
+                      name="list-outline"
+                      size={30}
+                      color="black"
+                      style={styles.icon}
+                    />
                   </TouchableOpacity>
                 </View>
               </View>
             ) : (
               // Question and Answer Modal Content
-              <View style={styles.explanationModal}>
+              <View style={{
+                  justifyContent: "center",
+                  alignItems: "left",
+                  margin: 30,
+                }}>
+                  <Text style={{fontSize: 30,
+                    fontWeight: "800",
+                    // alignItems: "left",
+                    marginTop: 10,
+                    marginBottom: 10,
+                    marginLeft: 7
+                    }}>Explanaton</Text>
                 <TouchableOpacity
-                  onPress={() => setShowExplanation(false)}
-                  style={{ position: "absolute", top: -10, left: 20 }}
+                  onPress={toggleExplanationModal}
+                  style={{ position: "absolute", top: 15, right: 10 }}
                 >
-                  <Icon name="arrow-back-outline" size={30} color="black" />
+                  <Icon name="close-outline" size={30} color="black" />
                 </TouchableOpacity>
                 {questions.map((question, index) => (
                   <View key={index}>
                     <Text style={styles.explanationText}>
                       Question: {question.question}
                     </Text>
-                    <Text style={styles.explanationText}>
+                    <Text style={[styles.explanationText, {color:'green'}]}>
                       Answer: {question.answer_text}
                     </Text>
-                    <Text style={styles.explanationText}>
-                      Selected Option: {question.selectedOption}
+                    <Text style={[styles.explanationText, { color: question.selectedOption === question.answer_id ? 'green' : 'red' }]}>
+                      Selected Option: {question.options.find(option => option.option_id === question.selectedOption)?.option_text}
                     </Text>
                   </View>
                 ))}
