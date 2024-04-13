@@ -310,7 +310,7 @@ app.get('/result/:userId', (req, res) => {
      WHERE user_id = ? 
        AND time <> 0
      GROUP BY user_id, title_id, difficulty)
-     ORDER by DESC`;
+     ORDER BY id DESC`;
 
   // Execute the query with the user ID as a parameter
   mysqlConnection.query(query, [userId], (err, results) => {
