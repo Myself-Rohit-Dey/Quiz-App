@@ -9,27 +9,37 @@ const port = 3000;
 dotenv.config();
 
 // Create MySQL connection
-const mysqlConnection = mysql.createConnection({
+const mysqlConnection = mysql.createPool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE
+  database: process.env.DB_DATABASE,
 });
 
 
 // Connect to MySQL
-mysqlConnection.connect((err) => {
+// mysqlConnection.connect((err) => {
+//   if (err) {
+//     console.error('Error connecting to MySQL: ', err);
+//     // Attempt to reconnect
+//     setTimeout(() => {
+//       mysqlConnection.connect();
+//     }, 2000); // Retry connection after 2 seconds
+//   } else {
+//     console.log('Connected to MySQL');
+//   }
+// });
+// Handle MySQL errors
+mysqlConnection.getConnection((err, connection) => {
   if (err) {
-    console.error('Error connecting to MySQL: ', err);
-    // Attempt to reconnect
-    setTimeout(() => {
-      mysqlConnection.connect();
-    }, 2000); // Retry connection after 2 seconds
-  } else {
-    console.log('Connected to MySQL');
+    console.error('Error getting MySQL connection:', err);
+    return;
   }
+  console.log('Connected to MySQL');
 });
+
+
 
 app.use(express.json()); // Add this line to parse JSON requests
 
