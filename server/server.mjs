@@ -19,28 +19,13 @@ const mysqlConnection = mysql.createPool({
 
 
 // Connect to MySQL
-// mysqlConnection.connect((err) => {
-//   if (err) {
-//     console.error('Error connecting to MySQL: ', err);
-//     // Attempt to reconnect
-//     setTimeout(() => {
-//       mysqlConnection.connect();
-//     }, 2000); // Retry connection after 2 seconds
-//   } else {
-//     console.log('Connected to MySQL');
-//   }
-// });
-// Handle MySQL errors
 mysqlConnection.getConnection((err,result) => {
   if (err) {
     console.error('Error getting MySQL connection:', err);
-    // return result.status(500);
-    return;
   }else{
     console.log('Connected to MySQL');
-    return;
-  // return result.status(200);
   }
+  return;
 });
 
 
