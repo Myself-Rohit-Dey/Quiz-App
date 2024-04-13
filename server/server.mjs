@@ -31,12 +31,14 @@ const mysqlConnection = mysql.createPool({
 //   }
 // });
 // Handle MySQL errors
-mysqlConnection.getConnection((err, connection) => {
+mysqlConnection.getConnection((err,result) => {
   if (err) {
     console.error('Error getting MySQL connection:', err);
-    return;
-  }
+    // return result.status(500);
+  }else{
   console.log('Connected to MySQL');
+  // return result.status(200);
+  }
 });
 
 
