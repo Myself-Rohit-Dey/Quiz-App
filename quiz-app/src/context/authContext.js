@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Example login function
+  // login function
   const login = async (userData) => {
     setUser(userData);
     try {
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Example logout function
+  // logout function
   const logout = async () => {
     setUser(null);
     try {

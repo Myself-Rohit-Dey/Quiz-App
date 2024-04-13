@@ -1,33 +1,25 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Button,
-  FlatList,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Button, FlatList } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 
 const ManageQuestions = () => {
-  const [questions, setQuestions] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newQuestion, setNewQuestion] = useState("");
-  const [answers, setAnswers] = useState([
-    { id: 1, text: "", isCorrect: false },
-  ]);
-  const [explanation, setExplanation] = useState("");
-  const [difficulty, setDifficulty] = useState("EASY");
-  const [marks, setMarks] = useState(1);
-  const [selectedTopic, setSelectedTopic] = useState(1);
+  // State variables
+  const [questions, setQuestions] = useState([]); // Store existing questions
+  const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility state
+  const [newQuestion, setNewQuestion] = useState(""); // New question text
+  const [answers, setAnswers] = useState([{ id: 1, text: "", isCorrect: false }]); // Answers array for the new question
+  const [explanation, setExplanation] = useState(""); // Explanation for the new question
+  const [difficulty, setDifficulty] = useState("EASY"); // Difficulty level of the new question
+  const [marks, setMarks] = useState(1); // Marks awarded for the new question
+  const [selectedTopic, setSelectedTopic] = useState(null); // Selected topic for the new question
 
+  // Fetch questions when component mounts
   useEffect(() => {
     fetchQuestions();
   }, []);
 
+  // Function to fetch questions from the server
   const fetchQuestions = async () => {
     try {
       const response = await fetch(
@@ -43,9 +35,10 @@ const ManageQuestions = () => {
     }
   };
 
+  // Function to toggle the visibility of the modal
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
-    // Reset newQuestion, explanation, difficulty, marks, and answers when closing the modal
+    // Reset input fields when closing the modal
     if (!isModalVisible) {
       setSelectedTopic(1);
       setNewQuestion("");
@@ -56,6 +49,7 @@ const ManageQuestions = () => {
     }
   };
 
+  // Function to handle adding a new question
   const handleAddQuestion = async () => {
     try {
       const response = await fetch(
@@ -66,36 +60,37 @@ const ManageQuestions = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            title_id: selectedTopic, // Assuming you have a specific title ID
-            question: newQuestion,
+            title_id: selectedTopic, // Selected topic ID
+            question: newQuestion, // New question text
             answer_id:
               String.fromCharCode(
                 answers.find((answer) => answer.isCorrect)?.id + 96
-              ) || "a", // Get ID of the correct answer
-            answer_text: answers.find((answer) => answer.isCorrect)?.text || "",
-            explanation: explanation,
-            difficulty: difficulty,
-            marks: marks,
+              ) || "a", // ID of the correct answer
+            answer_text: answers.find((answer) => answer.isCorrect)?.text || "", // Text of the correct answer
+            explanation: explanation, // Explanation for the answer
+            difficulty: difficulty, // Difficulty level of the question
+            marks: marks, // Marks awarded for the question
             ...answers.reduce(
               (acc, answer, index) => ({
                 ...acc,
-                [`op${index + 1}`]: answer.text,
+                [`op${index + 1}`]: answer.text, // Options for the question
               }),
               {}
-            ), // Add options
+            ),
           }),
         }
       );
       if (!response.ok) {
         throw new Error("Failed to add question");
       }
-      toggleModal();
+      toggleModal(); // Close the modal
       fetchQuestions(); // Refresh the question list
     } catch (error) {
       console.error("Error adding question:", error);
     }
   };
 
+  // Function to add a new answer option
   const handleAddAnswer = () => {
     setAnswers((prevAnswers) => [
       ...prevAnswers,
@@ -103,6 +98,7 @@ const ManageQuestions = () => {
     ]);
   };
 
+  // Function to handle text input change for an answer option
   const handleAnswerChange = (text, id) => {
     setAnswers((prevAnswers) =>
       prevAnswers.map((answer) =>
@@ -111,6 +107,7 @@ const ManageQuestions = () => {
     );
   };
 
+  // Function to toggle the correct answer option
   const handleToggleCorrect = (id) => {
     setAnswers((prevAnswers) =>
       prevAnswers.map((answer) =>
@@ -121,6 +118,7 @@ const ManageQuestions = () => {
     );
   };
 
+  // Function to handle difficulty level change
   const handleDifficultyChange = (value) => {
     setDifficulty(value);
     // Update marks based on difficulty
@@ -135,12 +133,14 @@ const ManageQuestions = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Quiz Questions</Text>
         <TouchableOpacity onPress={toggleModal}>
           <Icon name="add-circle-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
+      {/* Filter by Topic dropdown */}
       <View style={styles.dropdownContainer}>
         <Text style={styles.dropdownLabel}>Filter by Topic:</Text>
         <View style={styles.dropdown}>
@@ -158,8 +158,21 @@ const ManageQuestions = () => {
           </Picker>
         </View>
       </View>
-      {selectedTopic === null
-        ? questions.map((question, index) => (
+      {/* List of questions */}
+      {selectedTopic === null ? (
+        questions.map((question, index) => (
+          <View key={index} style={styles.questionContainer}>
+            <Text style={styles.index}>{index + 1}</Text>
+            <Text style={styles.question}>{question.question}</Text>
+            <Text style={styles.answer}>
+              Correct Answer: {question.answer_text}
+            </Text>
+          </View>
+        ))
+      ) : (
+        questions
+          .filter((question) => question.title_id === selectedTopic)
+          .map((question, index) => (
             <View key={index} style={styles.questionContainer}>
               <Text style={styles.index}>{index + 1}</Text>
               <Text style={styles.question}>{question.question}</Text>
@@ -168,17 +181,8 @@ const ManageQuestions = () => {
               </Text>
             </View>
           ))
-        : questions
-            .filter((question) => question.title_id === selectedTopic)
-            .map((question, index) => (
-              <View key={index} style={styles.questionContainer}>
-                <Text style={styles.index}>{index + 1}</Text>
-                <Text style={styles.question}>{question.question}</Text>
-                <Text style={styles.answer}>
-                  Correct Answer: {question.answer_text}
-                </Text>
-              </View>
-            ))}
+      )}
+      {/* Modal for adding a new question */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -188,6 +192,7 @@ const ManageQuestions = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Add New Question</Text>
+            {/* Topic Picker */}
             <View style={styles.topicpicker}>
               <Picker
                 selectedValue={selectedTopic}
@@ -201,22 +206,26 @@ const ManageQuestions = () => {
                 {/* Add more topics as needed */}
               </Picker>
             </View>
+            {/* Question input */}
             <TextInput
               style={styles.input}
               placeholder="Enter question"
               value={newQuestion}
               onChangeText={setNewQuestion}
             />
+            {/* Answers list */}
             <FlatList
               data={answers}
               renderItem={({ item }) => (
                 <View style={styles.answerContainer}>
+                  {/* Answer input */}
                   <TextInput
                     style={styles.answerInput}
                     placeholder={`Answer ${item.id}`}
                     value={item.text}
                     onChangeText={(text) => handleAnswerChange(text, item.id)}
                   />
+                  {/* Toggle correct answer button */}
                   <TouchableOpacity
                     onPress={() => handleToggleCorrect(item.id)}
                     style={[
@@ -232,12 +241,14 @@ const ManageQuestions = () => {
               )}
               keyExtractor={(item) => item.id.toString()}
             />
+            {/* Explanation input */}
             <TextInput
               style={styles.input}
               placeholder="Explanation"
               value={explanation}
               onChangeText={setExplanation}
             />
+            {/* Difficulty level picker */}
             <View style={styles.pickerContainer}>
               <Text style={styles.pickerLabel}>Difficulty:</Text>
               <View style={styles.picker}>
@@ -251,6 +262,7 @@ const ManageQuestions = () => {
                 </Picker>
               </View>
             </View>
+            {/* Marks input */}
             <TextInput
               style={styles.input}
               placeholder="Marks"
@@ -258,6 +270,7 @@ const ManageQuestions = () => {
               onChangeText={(text) => setMarks(parseInt(text))}
               keyboardType="numeric"
             />
+            {/* Buttons */}
             <View style={styles.buttonContainer}>
               <Button title="Add Answer" onPress={handleAddAnswer} />
               <Button title="Add Question" onPress={handleAddQuestion} />
@@ -375,8 +388,8 @@ const styles = StyleSheet.create({
   picker: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#ccc", // Border color
-    borderRadius: 5, // Border radius
+    borderColor: "#ccc",
+    borderRadius: 5, 
   },
   dropdownContainer: {
     flexDirection: "row",
@@ -390,9 +403,8 @@ const styles = StyleSheet.create({
   dropdown: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#ccc", // Border color
-    borderRadius: 5, // Border radius
-    // padding: 2,
+    borderColor: "#ccc", 
+    borderRadius: 5, 
   },
   dropdownText: {
     fontSize: 16,

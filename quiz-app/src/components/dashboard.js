@@ -1,243 +1,22 @@
-// import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
-// import React, { useEffect, useState } from "react";
-// import Icon from "react-native-vector-icons/Ionicons";
-// import { useAuth } from "../context/authContext";
-// import { Table, Row } from "react-native-table-component";
-
-// const Dashboard = () => {
-//   const [activeSection, setActiveSection] = useState("");
-//   const [quizzes, setQuizzes] = useState([]);
-//   // const [showQuizzes, setShowQuizzes] = useState(false); // State to toggle quiz visibility
-
-//   useEffect(() => {
-//     fetchQuizzes();
-//   }, [user]);
-
-//   const fetchQuizzes = async () => {
-//     try {
-//       const response = await fetch(
-//         "http://quiz-app-react-native.vercel.app/admin/analytics/get-all-quizzes"
-//       );
-//       if (!response.ok) {
-//         throw new Error("Failed to fetch quizzes");
-//       }
-//       const data = await response.json();
-//       setQuizzes(data.quizzes);
-//     } catch (error) {
-//       console.error("Error fetching quizzes:", error);
-//     }
-//   };
-
-//   const { user } = useAuth();
-//   // const renderSection = () => {
-//   //   switch (activeSection) {
-//   //     case "Profile":
-//   //     //   return <ProfileSection />;
-//   //     // case "Settings":
-//   //     //   return <SettingsSection />;
-//   //     case "Quizzes":
-//   //       return <QuizzesSection />;
-//   //     case "Messages":
-//   //       return <MessagesSection />;
-//   //     // case "Tasks":
-//   //     //   return <TasksSection />;
-//   //     // case "Calendar":
-//   //     //   return <CalendarSection />;
-//   //     default:
-//   //       return <Dashboard />;
-//   //   }
-//   // };
-
-//   const PressableFeatureBox = ({ name, icon, onPress }) => (
-//     <TouchableOpacity onPress={onPress} style={styles.featureBox}>
-//       <Icon name={icon} size={50} color="#3498db" />
-//       <Text style={styles.featureName}>{name}</Text>
-//     </TouchableOpacity>
-//   );
-
-//   // const QuizzesSection = () => (
-//   //   <View style={styles.container}>
-//   //     <View style={styles.headerContainer}>
-//   //       <Text style={styles.headerTitle}>Quizzes Section</Text>
-//   //     </View>
-//   //     <View style={styles.contentContainer}>
-//   //       <Text>Qui</Text>
-//   //       {/* {quizzes.map((quiz) => (
-//   //         <View key={quiz.id} style={styles.quizContainer}>
-//   //           <Text>Title: {quiz.title}</Text>
-//   //           <Text>Difficulty: {quiz.difficulty}</Text>
-//   //           <Text>Number of Questions: {quiz.no_of_question}</Text>
-//   //           <Text>Total Marks: {quiz.total_marks}</Text>
-//   //           <Text>Time: {quiz.time}</Text>
-//   //         </View>
-//   //       ))} */}
-//   //     </View>
-//   //   </View>
-//   // );
-
-//   // const MessagesSection = () => (
-//   //   <View style={styles.container}>
-//   //     <View style={styles.headerContainer}>
-//   //       {/* {renderBackButton()} */}
-//   //       <Text style={styles.headerTitle}>Messages Section</Text>
-//   //     </View>
-//   //     <View style={styles.contentContainer}>
-//   //       <Text style={styles.contentText}>Messages Content Goes Here</Text>
-//   //     </View>
-//   //   </View>
-//   // );
-
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.headerContainer}>
-//         {/* {renderBackButton()} */}
-//         <Text style={styles.h1}>WELCOME Admin</Text>
-//         {/* <Text style={styles.headerTitle}>Profile Section</Text> */}
-//       </View>
-//       <View style={styles.contentContainer}>
-//         {/* <Icon name="person" size={80} color="#3498db" /> */}
-//         <Text style={styles.contentText}>
-//           Username: {user.first_name} {user.last_name}
-//         </Text>
-//         <Text style={styles.contentText}>Email: {user.email}</Text>
-//       </View>
-//       {/* <View style={styles.buttonsContainer}>
-//       <TouchableOpacity
-//         onPress={() => setActiveSection("Profile")}
-//         style={styles.button}
-//       >
-//         <Icon name="person" size={30} color="white" />
-//         <Text style={styles.buttonText}>Profile</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity
-//         onPress={() => setActiveSection("Settings")}
-//         style={styles.button}
-//       >
-//         <Icon name="settings" size={30} color="white" />
-//         <Text style={styles.buttonText}>Settings</Text>
-//       </TouchableOpacity>
-//     </View> */}
-//       <View style={styles.featuresContainer}>
-//         <PressableFeatureBox
-//           name="Quizzes"
-//           icon="stats-chart"
-//           onPress={() => setActiveSection("Quizzes")}
-//         />
-//         <PressableFeatureBox
-//           name="Messages"
-//           icon="chatbox"
-//           onPress={() => setActiveSection("Messages")}
-//         />
-//       </View>
-//       <Text>
-//         {/* <View style={styles.container}>
-//         {renderSection()}
-//       </View> */}
-//         {/* <ScrollView > */}
-//           {activeSection === "Quizzes" && (
-//             <View >
-//               <Table borderStyle={{ borderWidth: 0.5, borderColor: "#000" }}>
-//             <Row data={["Title", "Difficulty", "No. of Questions", "Total Marks", "Time"]} style={styles.head} textStyle={styles.text} />
-//             {quizzes.map((quiz) => (
-//               <Row
-//                 key={quiz.id}
-//                 data={[quiz.title, quiz.difficulty, quiz.no_of_question.toString(), quiz.total_marks, quiz.time]}
-//                 textStyle={styles.text}
-//               />
-//             ))}
-//           </Table>
-//               {/* <View style={styles.quizContainer}>
-//                 <Text>Title</Text>
-//                 <Text>Difficulty</Text>
-//                 <Text>Number of Questions</Text>
-//                 <Text>Total Marks</Text>
-//                 <Text>Time</Text>
-//               </View>
-//               {quizzes.map((quiz) => (
-//                 <View key={quiz.id} style={styles.quizContainer}>
-//                   <Text>{quiz.title}</Text>
-//                   <Text>{quiz.difficulty}</Text>
-//                   <Text>{quiz.no_of_question}</Text>
-//                   <Text>{quiz.total_marks}</Text>
-//                   <Text>{quiz.time}</Text>
-//                 </View>
-//               ))} */}
-//             </View>
-//           )}
-//         {/* </ScrollView> */}
-//       </Text>
-//     </View>
-//   );
-// };
-
-// export default Dashboard;
-
-// const styles = StyleSheet.create({
-//   h1: {
-//     fontSize: 24,
-//     fontWeight: "bold",
-//     marginBottom: 20,
-//     color: "#333", // You can change the color as needed
-//   },
-//   featuresContainer: {
-//     flex: 1,
-//     flexDirection: "row",
-//     flexWrap: "wrap",
-//     justifyContent: "space-between",
-//     marginTop: 20,
-//   },
-//   featureBox: {
-//     alignItems: "center",
-//     justifyContent: "center",
-//     width: "45%",
-//     aspectRatio: 1,
-//     backgroundColor: "white",
-//     borderRadius: 10,
-//     marginVertical: 10,
-//     elevation: 5,
-//   },
-//   featureName: {
-//     marginTop: 10,
-//     fontSize: 16,
-//     fontWeight: "bold",
-//     color: "#555",
-//   },
-
-//   container: {
-//     flex: 1,
-//     paddingBottom: 20,
-//   },
-//   contentContainer: {
-//     marginBottom: 20,
-//   },
-//   quizContainer: {
-//     marginTop: 20,
-//   },
-//   head: { height: 70, backgroundColor: "#f1f8ff" },
-//   headText: { margin: 6, fontWeight: "bold", width: "20%" },
-//   text: { margin: 6, textAlign: "center", width: 54 }, // Set equal width for each column
-// });
-
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
 import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity,TextInput } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useAuth } from "../context/authContext";
-import { Table, Row } from "react-native-table-component";
+import { Table, Row } from "react-native-reanimated-table";
 
 const Dashboard = () => {
-  const [activeSection, setActiveSection] = useState("");
-  const [quizzes, setQuizzes] = useState([]);
-  
+  const [activeSection, setActiveSection] = useState(""); // State to manage the active section
+  const [quizzes, setQuizzes] = useState([]); // State to store all quizzes
+  const [filteredQuizzes, setFilteredQuizzes] = useState([]); // State to store filtered quizzes
+  const [filterTitle, setFilterTitle] = useState(""); // State to store the filter for quiz title
+  const [filterNumQuestions, setFilterNumQuestions] = useState(""); // State to store the filter for number of questions
+
+  // Fetch quizzes from the API when component mounts or user changes
   useEffect(() => {
     fetchQuizzes();
   }, [user]);
 
+  // Function to fetch quizzes from the API
   const fetchQuizzes = async () => {
     try {
       const response = await fetch(
@@ -253,8 +32,21 @@ const Dashboard = () => {
     }
   };
 
-  const { user } = useAuth();
+  const { user } = useAuth(); // Get authenticated user details
 
+  // Function to apply filters based on title and number of questions
+  const applyFilters = () => {
+    const filtered = quizzes.filter((quiz) => {
+      return (
+        quiz.title.toLowerCase().includes(filterTitle.toLowerCase()) &&
+        (!filterNumQuestions ||
+          quiz.no_of_question.toString().includes(filterNumQuestions))
+      );
+    });
+    setFilteredQuizzes(filtered); // Update filtered quizzes
+  };
+
+  // Component for feature box with icon and name
   const PressableFeatureBox = ({ name, icon, onPress }) => (
     <TouchableOpacity onPress={onPress} style={styles.featureBox}>
       <Icon name={icon} size={50} color="#3498db" />
@@ -274,20 +66,83 @@ const Dashboard = () => {
         <Text style={styles.contentText}>Email: {user.email}</Text>
       </View>
       <View style={styles.featuresContainer}>
+        {/* Feature box for displaying all quizzes */}
         <PressableFeatureBox
-          name="Quizzes"
-          icon="stats-chart"
-          onPress={() => setActiveSection("Quizzes")}
+          name="All Quizzes"
+          icon="chatbubbles-sharp"
+          onPress={() => {
+            setActiveSection("Quizzes");
+            setFilterTitle(""); // Reset filter title
+            setFilterNumQuestions(""); // Reset filter number of questions
+          }}
         />
+        {/* Feature box for filtering quizzes */}
         <PressableFeatureBox
-          name="Messages"
-          icon="chatbox"
-          onPress={() => setActiveSection("Messages")}
+          name="Filter"
+          icon="layers-sharp"
+          onPress={() => setActiveSection("Filter")}
         />
       </View>
-      <Text style={{ justifyContent: "center", textAlign: "center" }}>
-        {activeSection === "Quizzes" &&
-          (quizzes.length > 0 ? (
+
+      <View style={{ justifyContent: "center", textAlign: "center" }}>
+        {/* Display quizzes */}
+        {activeSection === "Quizzes" && (
+          <Table borderStyle={{ borderWidth: 0.5, borderColor: "#000" }}>
+            <Row
+              data={[
+                "Title",
+                "Difficulty",
+                "No. of Questions",
+                "Total Marks",
+                "Time",
+              ]}
+              style={styles.head}
+              textStyle={styles.text}
+            />
+            {quizzes.map((quiz) => (
+              <Row
+                key={quiz.id}
+                data={[
+                  quiz.title,
+                  quiz.difficulty,
+                  quiz.no_of_question.toString(),
+                  quiz.total_marks.toString(),
+                  quiz.time,
+                ]}
+                textStyle={styles.rowText}
+              />
+            ))}
+          </Table>
+        )}
+
+        {/* Filter quizzes based on title and number of questions */}
+        {activeSection === "Filter" && (
+          <View>
+            <View style={styles.dropdownContainer}>
+              <Text style={styles.dropdownLabel}>Title:</Text>
+              <TextInput
+                style={styles.dropdown}
+                value={filterTitle}
+                onChangeText={setFilterTitle}
+              />
+            </View>
+            <View style={styles.dropdownContainer}>
+              <Text style={styles.dropdownLabel}>Number of Questions:</Text>
+              <TextInput
+                style={styles.dropdown}
+                value={filterNumQuestions}
+                onChangeText={setFilterNumQuestions}
+                keyboardType="numeric"
+              />
+            </View>
+            {/* Button to apply filters */}
+            <TouchableOpacity
+              style={styles.filterButton}
+              onPress={applyFilters}
+            >
+              <Text style={styles.filterButtonText}>Apply Filter</Text>
+            </TouchableOpacity>
+            {/* Table to display filtered quizzes */}
             <Table borderStyle={{ borderWidth: 0.5, borderColor: "#000" }}>
               <Row
                 data={[
@@ -298,29 +153,25 @@ const Dashboard = () => {
                   "Time",
                 ]}
                 style={styles.head}
-               
+                textStyle={styles.text}
               />
-              {quizzes.map((quiz) => {
-                  const [hours, minutes, seconds] = quiz.time.split(':');
-                  return (
-                    <Row
-                      key={quiz.id}
-                      data={[
-                        quiz.title,
-                        quiz.difficulty,
-                        quiz.no_of_question.toString(),
-                        quiz.total_marks.toString(),
-                        `${minutes}m ${seconds}s`,
-                      ]}
-                     
-                    />
-                  );
-                })}
+              {filteredQuizzes.map((quiz) => (
+                <Row
+                  key={quiz.id}
+                  data={[
+                    quiz.title,
+                    quiz.difficulty,
+                    quiz.no_of_question.toString(),
+                    quiz.total_marks.toString(),
+                    quiz.time,
+                  ]}
+                  textStyle={styles.rowText}
+                />
+              ))}
             </Table>
-          ) : (
-            <Text>No Data available</Text>
-          ))}
-      </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -333,6 +184,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: "#333",
+    alignSelf: "center",
   },
   featuresContainer: {
     flex: 1,
@@ -357,17 +209,47 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#555",
   },
-
   container: {
     flex: 1,
-    paddingBottom: 20,
+    paddingTop: 20,
   },
   contentContainer: {
     marginBottom: 20,
   },
-  quizContainer: {
-    marginTop: 20,
+  contentText: {
+    alignSelf: "center",
   },
-  head: { height: 70, backgroundColor: "#f1f8ff" },
-  headText: { margin: 6, fontWeight: "bold", width: "20%" },
+  head: { height: 60, backgroundColor: "#f1f8ff", width: 340 },
+  text: { margin: 4, textAlign: "center" },
+  rowText: { margin: 5, textAlign: "center" },
+  dropdownContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 10,
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  dropdown: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    paddingLeft:7
+  },
+  filterButton: {
+    backgroundColor: "#3498db",
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 10,
+    marginTop: 10,
+    alignItems: "center",
+    marginBottom: 20,
+    elevation: 5,
+  },
+  filterButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
 });

@@ -41,6 +41,7 @@ create table quiz(
 );
 select * from quiz;
 
+
 drop table quiz_question;
 create table quiz_question(
 	id int auto_increment,
@@ -194,3 +195,13 @@ VALUES(1,1,'HighText Machine Language'),(1,2,'HyperText and links Markup Languag
 
 
 select * from quiz_question_option;
+
+-- SELECT * FROM quiz 
+-- WHERE (user_id, title_id, id) IN 
+--   (SELECT user_id, title_id, MAX(id) AS max_id 
+--    FROM quiz 
+--    WHERE user_id = 1
+--      AND time <> 0
+--    GROUP BY user_id, title_id, difficulty)
+   
+   

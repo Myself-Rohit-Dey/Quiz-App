@@ -180,7 +180,7 @@ const Home = ({ navigation, route }) => {
                     <View key={index} style={styles.card}>
                       {/* Rounded rectangle container for the topic */}
                       <View style={styles.topicContainer}>
-                        <Text style={styles.topicText}>{quiz.title}</Text>
+                        <Text style={styles.topicText}>{quiz.title} ( {quiz.difficulty.toLowerCase()} )</Text>
                       </View>
                       {/* Rest of the card content */}
                       <View

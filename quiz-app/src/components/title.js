@@ -1,4 +1,3 @@
-// Title.js
 import { Image, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { useRoute } from '@react-navigation/native';
@@ -6,44 +5,34 @@ import { useRoute } from '@react-navigation/native';
 const Title = ({ firstName }) => {
   const route = useRoute();
 
-  // Conditional rendering based on route name
+  // Function to determine the title based on the current route
   const getTitle = () => {
     switch (route.name) {
       case 'Start':
-        return 'Quiz-App'
+        return 'Quiz-App'; // Title for the Start screen
       case 'Login':
-        return 'Login';
+        return 'Login'; // Title for the Login screen
       case 'Register':
-        return 'Register';
+        return 'Register'; // Title for the Register screen
       case 'Home':
-        // return (
-        //   <View>
-        //   <Text>{`Welcome ${firstName}`}</Text>
-        //   <View style={styles.imageOverlay}>
-        //         <Image
-        //           source={{ uri: 'https://ugokawaii.com/wp-content/uploads/2022/12/quiz-time.gif' }}
-        //           style={styles.cardImage}
-        //           resizeMode="cover"
-        //         />
-        //   </View>
-        //   </View>
-        //   );
-        if(firstName){ 
-             return `Welcome ${firstName} 🕵🏻`
-        }else{
-            return 'Quiz-App'
+        // Title for the Home screen, including the user's first name if available
+        if (firstName) {
+          return `Welcome ${firstName} 🕵🏻`; // Display the user's first name with a welcome message
+        } else {
+          return 'Quiz-App'; // Default title for the Home screen if the user's first name is not available
         }
       case 'Option':
-        return 'Select Options';
+        return 'Select Options'; // Title for the Option screen
       case 'Result':
-        return 'Result';
+        return 'Result'; // Title for the Result screen
       case 'Admin':
-        return 'Admin';
+        return 'Admin'; // Title for the Admin screen
     }
   };
 
   return (
     <View style={styles.container}>
+      {/* Display the title based on the current route */}
       <Text style={styles.title}>{getTitle()}</Text>
     </View>
   );
@@ -62,5 +51,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  
 });

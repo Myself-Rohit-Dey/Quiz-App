@@ -22,9 +22,13 @@ const mysqlConnection = mysql.createConnection({
 mysqlConnection.connect((err) => {
   if (err) {
     console.error('Error connecting to MySQL: ', err);
-    return;
+    // Attempt to reconnect
+    setTimeout(() => {
+      mysqlConnection.connect();
+    }, 2000); // Retry connection after 2 seconds
+  } else {
+    console.log('Connected to MySQL');
   }
-  console.log('Connected to MySQL');
 });
 
 app.use(express.json()); // Add this line to parse JSON requests

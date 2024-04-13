@@ -7,8 +7,6 @@ import ManageQuestions from '../components/manageQuestions';
 import Icon from "react-native-vector-icons/Ionicons";
 const Admin = ({navigation}) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('Dashboard');
-  // const [activeSection,setActiveSection]= useState('')
-
   const menuItems = [
     { id: 'Dashboard', title: 'Dashboard' },
     { id: 'Users', title: 'Users' },

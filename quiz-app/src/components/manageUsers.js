@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
+
 const ManageUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newUser, setNewUser] = useState({
+  // State variables
+  const [users, setUsers] = useState([]); // Store existing users
+  const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility state
+  const [newUser, setNewUser] = useState({ // New user object
     first_name: '',
     last_name: '',
     gender: '', // Default to 'Male' (m)
@@ -14,10 +16,12 @@ const ManageUsers = () => {
     role: '', // Default to 'USER'
   });
 
+  // Fetch users when component mounts
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  // Function to fetch users from the server
   const fetchUsers = async () => {
     try {
       const response = await fetch('https://quiz-app-react-native.vercel.app/admin/get-users');
@@ -31,6 +35,7 @@ const ManageUsers = () => {
     }
   };
 
+  // Function to toggle the visibility of the modal
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
     // Reset newUser when closing the modal
@@ -46,6 +51,7 @@ const ManageUsers = () => {
     }
   };
 
+  // Function to handle adding a new user
   const handleAddUser = async () => {
     try {
       const response = await fetch('https://quiz-app-react-native.vercel.app/register', {
@@ -58,26 +64,30 @@ const ManageUsers = () => {
       if (!response.ok) {
         throw new Error('Failed to add user');
       }
-      toggleModal();
+      toggleModal(); // Close the modal
       fetchUsers(); // Refresh the user list
     } catch (error) {
       console.error('Error adding user:', error);
     }
   };
 
+  // Function to handle input change for the new user
   const handleChange = (value, key) => {
     setNewUser(prevUser => ({ ...prevUser, [key]: value }));
   };
 
   return (
     <View style={styles.container}>
+      {/* Total Users count */}
       <Text style={[styles.title,{marginBottom:20}]}>Total Users: {users.length}</Text>
+      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>User List</Text>
         <TouchableOpacity onPress={toggleModal}>
           <Icon name="add-circle-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
+      {/* List of users */}
       {users.map(user => (
         <View key={user.id} style={styles.userItem}>
           <Text style={styles.userName}>{user.first_name} {user.last_name}</Text>
@@ -85,6 +95,7 @@ const ManageUsers = () => {
           <Text style={styles.userRole}>{user.role}</Text>
         </View>
       ))}
+      {/* Modal for adding a new user */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -94,6 +105,7 @@ const ManageUsers = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Add New User</Text>
+            {/* Input fields */}
             <TextInput
               style={styles.input}
               placeholder="First Name"
@@ -134,6 +146,7 @@ const ManageUsers = () => {
               <Picker.Item label="Admin" value="ADMIN" />
               <Picker.Item label="User" value="USER" />
             </Picker>
+            {/* Buttons */}
             <View style={styles.buttonContainer}>
               <Button title="Add User" onPress={handleAddUser} />
               <Button title="Cancel" onPress={toggleModal} />
@@ -153,7 +166,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'space-between',
     marginBottom: 20,
   },
   title: {
