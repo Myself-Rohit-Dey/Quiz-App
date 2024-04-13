@@ -35,8 +35,10 @@ mysqlConnection.getConnection((err,result) => {
   if (err) {
     console.error('Error getting MySQL connection:', err);
     // return result.status(500);
+    return;
   }else{
-  console.log('Connected to MySQL');
+    console.log('Connected to MySQL');
+    return;
   // return result.status(200);
   }
 });
