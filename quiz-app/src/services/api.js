@@ -1,4 +1,5 @@
-//FUTURE WORK
+/*FUTURE WORK*/
+//Keep all the api call in single folder
 
 // const API_BASE_URL = "https://quiz-app-react-native.vercel.app/";
 

@@ -22,6 +22,7 @@ const Register = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
 
   const handleRegistration = async () => {
+    /* Checked in backend */
     // Validation for required fields
     // if (!firstName || !lastName || !email || !password || !gender) {
     //   Toast.show({
@@ -47,7 +48,7 @@ const Register = ({ navigation }) => {
 
     // Validation for password format
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,20}$/;
     if (!passwordRegex.test(password)) {
       Toast.show({
         type: "error",
@@ -81,17 +82,15 @@ const Register = ({ navigation }) => {
         }
       );
       const data = await response.json();
-      console.log(data);
-      // Handle successful registration here, e.g., navigate to login screen
+      // console.log(data);
       
       if (data.success == false) {
-        // navigation.navigate("ErrorPage");
         Toast.show({
           type: "error",
           text1: data.message,
           visibilityTime: 2000,
           autoHide: true,
-          position: 'bottom',
+          // position: 'bottom',
         });
       } else {
         Toast.show({
@@ -99,18 +98,28 @@ const Register = ({ navigation }) => {
           text1: data.message,
           visibilityTime: 2000,
           autoHide: true,
-          position: 'bottom',
+          // position: 'bottom',
         });
         navigation.navigate("Login");
       }
     } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: error,
+        visibilityTime: 2000,
+        autoHide: true,
+        // position: 'bottom',
+      });
       console.error("Error registering user:", error);
     }
   };
 
   return (
     <View style={styles.container}>
+      {/* Title Component */}
       <Title />
+
+      {/* First Name Input */}
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -118,6 +127,8 @@ const Register = ({ navigation }) => {
         onChangeText={setFirstName}
         autoCapitalize="words"
       />
+
+      {/* Last Name Input */}
       <TextInput
         style={styles.input}
         placeholder="Last Name"
@@ -125,6 +136,8 @@ const Register = ({ navigation }) => {
         onChangeText={setLastName}
         autoCapitalize="words"
       />
+
+      {/* Email Input */}
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -132,6 +145,8 @@ const Register = ({ navigation }) => {
         onChangeText={(text) => setEmail(text.toLowerCase())}
         keyboardType="email-address"
       />
+
+      {/* Password Input */}
       <View style={styles.passwordInputContainer}>
         <TextInput
           style={styles.passwordInput}
@@ -151,9 +166,13 @@ const Register = ({ navigation }) => {
           />
         </TouchableOpacity>
       </View>
+
+      {/* Password Details */}
       <Text style={styles.passwordDetails}>
         Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 special character (@$!%*?&), and be 8-20 characters long
       </Text>
+
+      {/* Gender Picker */}
       <Picker
         style={styles.input}
         selectedValue={gender}
@@ -163,7 +182,11 @@ const Register = ({ navigation }) => {
         <Picker.Item label="Male" value="M" />
         <Picker.Item label="Female" value="F" />
       </Picker>
+
+      {/* Register Button */}
       <Button title="Register" onPress={handleRegistration} />
+
+      {/* Login Link */}
       <View style={styles.loginContainer}>
         <Text>Already have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -220,7 +243,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "gray",
   },
-
 });
 
 export default Register;

@@ -3,10 +3,21 @@ import mysql from "mysql2";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
+// Using Services 
 const app = express();
 const port = 3000;
-
 dotenv.config();
+app.use(express.json());
+
+// Function to convert seconds to HH:MM:SS format
+function convertSecondsToHHMMSS(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
 
 // Create MySQL connection
 const mysqlConnection = mysql.createPool({
@@ -16,8 +27,6 @@ const mysqlConnection = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
 });
-
-
 // Connect to MySQL
 mysqlConnection.getConnection((err,result) => {
   if (err) {
@@ -29,13 +38,176 @@ mysqlConnection.getConnection((err,result) => {
 });
 
 
-
-app.use(express.json()); // Add this line to parse JSON requests
-
-
+/*Welcome to server*/
 app.get('/', (req, res) => {
   res.send('Welcome to my server!');
 });
+
+/*Admin*/
+app.get("/admin/analytics/get-all-quizzes", (req, res) => {
+  try {
+    // Query to fetch all users
+    const query = `SELECT * FROM quiz ORDER BY id DESC`;
+
+    // Execute the query
+    mysqlConnection.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching users:', err);
+        return res.status(500).json({
+          success: false,
+          message: "Error fetching users"
+        });
+      }
+
+      // Send the results back as JSON
+      res.status(200).json({
+        success: true,
+        quizzes: results
+      });
+    });
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching users"
+    });
+  }
+});
+app.get("/admin/get-users", (req, res) => {
+  try {
+    // Query to fetch all users
+    const query = "SELECT * FROM user";
+
+    // Execute the query
+    mysqlConnection.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching users:', err);
+        return res.status(500).json({
+          success: false,
+          message: "Error fetching users"
+        });
+      }
+
+      // Send the results back as JSON
+      res.status(200).json({
+        success: true,
+        users: results
+      });
+    });
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching users"
+    });
+  }
+});
+app.post("/admin/set-question", (req, res) => {
+  try {
+    const {
+      title_id,
+      question,
+      answer_id,
+      answer_text,
+      explanation,
+      difficulty,
+      marks,
+    } = req.body;
+    const body = req.body;
+    let ind = 'a';
+    const keysStartingWithOp = {}; // {"op1":1, "op2":2, "op3":3}    
+    for (const key in body) {
+      if (key.startsWith("op")) {
+        keysStartingWithOp[key] = body[key];
+      }
+    }
+    const optionKeys = Object.keys(keysStartingWithOp);
+
+
+    const same_question = "SELECT * FROM quiz_question WHERE question=?";
+    mysqlConnection.query(same_question, [question], (err, data) => {
+      if (err) throw err;
+      if (data.length > 0) {
+        return res.status(400).json({
+          message: "quiz question already exists",
+          success: true,
+        });
+      }
+      const sql =
+        "INSERT INTO quiz_question(title_id,question,answer_id,answer_text,explanation,difficulty,marks) VALUES(?,?,?,?,?,?,?)";
+
+
+      mysqlConnection.query(
+        sql,
+        [
+          title_id,
+          question,
+          answer_id,
+          answer_text,
+          explanation,
+          difficulty,
+          marks,
+        ],
+        (err, data) => {
+          if (err) throw err;
+         
+          const questionId = data.insertId;   // it returns the autoincremented id of that data
+         
+          optionKeys.forEach((key) => {
+            const optionText = keysStartingWithOp[key];
+            const insertOptionSql =
+              "INSERT INTO quiz_question_option(question_id, option_id, option_text) VALUES (?, ?, ?)";
+            mysqlConnection.query(
+              insertOptionSql,
+              [questionId, ind, optionText],
+              (err) => {
+                if (err) throw err;
+              });
+              ind = String.fromCharCode(ind.charCodeAt(0) + 1);
+          });
+          res.status(200).json({
+            success: true,
+            message: "All data and options are inserted",
+          });
+        });
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+app.get('/admin/get-question-answer', (req, res) => {
+  try {
+    // SQL query to fetch all questions
+    const query = 'SELECT * FROM quiz_question ORDER BY marks ASC';
+
+    // Execute the SQL query
+    mysqlConnection.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching questions:', err);
+        return res.status(500).json({
+          success: false,
+          message: 'Error fetching questions',
+        });
+      }
+
+      // Send the fetched questions back as JSON response
+      res.status(200).json({
+        success: true,
+        questions: results,
+      });
+    });
+  } catch (err) {
+    console.error('Error fetching questions:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching questions',
+    });
+  }
+});
+
 
 /*User*/
 app.post("/register", async (req, res) => {
@@ -65,7 +237,7 @@ app.post("/register", async (req, res) => {
       } else {
         return res.status(200).json({
           success: true,
-          message: "Data inserted"
+          message: "Registered Successfully"
         });
       }
     });
@@ -137,7 +309,8 @@ app.get('/result/:userId', (req, res) => {
      FROM quiz 
      WHERE user_id = ? 
        AND time <> 0
-     GROUP BY user_id, title_id, difficulty)`;
+     GROUP BY user_id, title_id, difficulty)
+     ORDER by DESC`;
 
   // Execute the query with the user ID as a parameter
   mysqlConnection.query(query, [userId], (err, results) => {
@@ -320,9 +493,12 @@ app.post("/quiz/update-result/:quizId", (req, res) => {
     const quizId = req.params.quizId;
     const {totalTime, totalScore } = req.body;
 
+     // Convert totalTime to HH:MM:SS format
+     const formattedTime = convertSecondsToHHMMSS(totalTime);
+
     // Update the quiz data in the Quiz table
     const updateQuizSql = "UPDATE quiz SET total_marks = ?, time = ? WHERE id = ?";
-    mysqlConnection.query(updateQuizSql, [totalScore, totalTime, quizId], (err, result) => {
+    mysqlConnection.query(updateQuizSql, [totalScore, formattedTime, quizId], (err, result) => {
       if (err) {
         console.error('Error updating quiz data:', err);
         return res.status(500).json({ success: false, message: 'Failed to update quiz data' });
@@ -335,173 +511,6 @@ app.post("/quiz/update-result/:quizId", (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 });
-
-//Admin
-app.get("/admin/analytics/get-all-quizzes", (req, res) => {
-  try {
-    // Query to fetch all users
-    const query = `SELECT * FROM quiz ORDER BY id DESC`;
-
-    // Execute the query
-    mysqlConnection.query(query, (err, results) => {
-      if (err) {
-        console.error('Error fetching users:', err);
-        return res.status(500).json({
-          success: false,
-          message: "Error fetching users"
-        });
-      }
-
-      // Send the results back as JSON
-      res.status(200).json({
-        success: true,
-        quizzes: results
-      });
-    });
-  } catch (err) {
-    console.error('Error fetching users:', err);
-    return res.status(500).json({
-      success: false,
-      message: "Error fetching users"
-    });
-  }
-});
-
-app.get("/admin/get-users", (req, res) => {
-  try {
-    // Query to fetch all users
-    const query = "SELECT * FROM user";
-
-    // Execute the query
-    mysqlConnection.query(query, (err, results) => {
-      if (err) {
-        console.error('Error fetching users:', err);
-        return res.status(500).json({
-          success: false,
-          message: "Error fetching users"
-        });
-      }
-
-      // Send the results back as JSON
-      res.status(200).json({
-        success: true,
-        users: results
-      });
-    });
-  } catch (err) {
-    console.error('Error fetching users:', err);
-    return res.status(500).json({
-      success: false,
-      message: "Error fetching users"
-    });
-  }
-});
-app.post("/admin/set-question", (req, res) => {
-  try {
-    const {
-      title_id,
-      question,
-      answer_id,
-      answer_text,
-      explanation,
-      difficulty,
-      marks,
-    } = req.body;
-    const body = req.body;
-    let ind = 'a';
-    const keysStartingWithOp = {}; // {"op1":1, "op2":2, "op3":3}    
-    for (const key in body) {
-      if (key.startsWith("op")) {
-        keysStartingWithOp[key] = body[key];
-      }
-    }
-    const optionKeys = Object.keys(keysStartingWithOp);
-
-
-    const same_question = "SELECT * FROM quiz_question WHERE question=?";
-    mysqlConnection.query(same_question, [question], (err, data) => {
-      if (err) throw err;
-      if (data.length > 0) {
-        return res.status(400).json({
-          message: "quiz question already exists",
-          success: true,
-        });
-      }
-      const sql =
-        "INSERT INTO quiz_question(title_id,question,answer_id,answer_text,explanation,difficulty,marks) VALUES(?,?,?,?,?,?,?)";
-
-
-      mysqlConnection.query(
-        sql,
-        [
-          title_id,
-          question,
-          answer_id,
-          answer_text,
-          explanation,
-          difficulty,
-          marks,
-        ],
-        (err, data) => {
-          if (err) throw err;
-         
-          const questionId = data.insertId;   // it returns the autoincremented id of that data
-         
-          optionKeys.forEach((key) => {
-            const optionText = keysStartingWithOp[key];
-            const insertOptionSql =
-              "INSERT INTO quiz_question_option(question_id, option_id, option_text) VALUES (?, ?, ?)";
-            mysqlConnection.query(
-              insertOptionSql,
-              [questionId, ind, optionText],
-              (err) => {
-                if (err) throw err;
-              });
-              ind = String.fromCharCode(ind.charCodeAt(0) + 1);
-          });
-          res.status(200).json({
-            success: true,
-            message: "All data and options are inserted",
-          });
-        });
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
-app.get('/admin/get-question-answer', (req, res) => {
-  try {
-    // SQL query to fetch all questions
-    const query = 'SELECT * FROM quiz_question ORDER BY marks ASC';
-
-    // Execute the SQL query
-    mysqlConnection.query(query, (err, results) => {
-      if (err) {
-        console.error('Error fetching questions:', err);
-        return res.status(500).json({
-          success: false,
-          message: 'Error fetching questions',
-        });
-      }
-
-      // Send the fetched questions back as JSON response
-      res.status(200).json({
-        success: true,
-        questions: results,
-      });
-    });
-  } catch (err) {
-    console.error('Error fetching questions:', err);
-    return res.status(500).json({
-      success: false,
-      message: 'Error fetching questions',
-    });
-  }
-});
-
 
 
 const PORT = process.env.PORT || 3000;

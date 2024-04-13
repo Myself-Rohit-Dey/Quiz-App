@@ -23,58 +23,30 @@ const Quiz = ({ navigation, route }) => {
   const listRef = useRef();
   const [modalVisible, setModalVisible] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(0); // Initial time: 300 seconds (5 minutes)
+  const [timeLeft, setTimeLeft] = useState(0);
   const [progress, setProgress] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
-
-  // State to manage whether the explanation modal is open or not
-  const [showExplanation, setShowExplanation] = useState(true);
-  //  const [currentQuestion, setCurrentQuestion] = useState(null);
-
-  // Function to toggle the explanation modal
-  const toggleExplanationModal = () => {
-    //  setCurrentQuestion(question);
-    setShowExplanation(!showExplanation);
-  };
-
-  const [backgroundColorIndex, setBackgroundColorIndex] = useState(0);
-  const backgroundColors = [
-    "#1507B0ff", // dark-blue-2
-    "#160FB1ff", // dark-blue
-    "#1718B3ff", // zaffre-2
-    "#1820B4ff", // zaffre
-    "#1A29B6ff", // international-klein-blue
-    "#1B31B7ff", // persian-blue-3
-    "#1C3AB9ff", // persian-blue-2
-    "#1D42BAff", // persian-blue
-    "#1E4ABCff", // violet-blue
-    "#1F53BDff", // sapphire
-    "#215BBFff", // tang-blue
-    "#2264C0ff", // denim
-    "#236CC2ff", // celtic-blue
-    "#2474C3ff", // french-blue
-    "#257DC5ff", // steel-blue-2
-    "#2685C6ff", // steel-blue
-    "#288EC8ff", // blue-ncs
-    "#2996C9ff", // celestial-blue
-    "#2A9FCBff", // blue-green
-    "#2BA7CCff", // pacific-cyan
+  const [showExplanation, setShowExplanation] = useState(true);   // State to manage whether the explanation modal is open or not
+  const [backgroundColorIndex, setBackgroundColorIndex] = useState(0);  // state to manage the background color of quiz
+  const backgroundColors = [ // background hex
+    "#664d00ff", //field-drab
+    "#6e2a0cff", //seal-brown
+    "#691312ff", //rosewood
+    "#5d0933ff", //tyrian-purple:
+    "#291938ff", //dark-purple
+    "#042d3aff", //gunmetal
+    "#12403cff", //brunswick-green
+    "#475200ff", //dark-moss-green
   ];
-
-  const changeBackgroundColor = () => {
-    setBackgroundColorIndex(
-      (prevIndex) => (prevIndex + 1) % backgroundColors.length
-    );
-  };
-
   let timeFactor = 1; // Default time factor for easy difficulty
-  if (difficulty === "MEDIUM") {
-    timeFactor = 2;
-  } else if (difficulty === "HARD") {
-    timeFactor = 3;
-  }
+    if (difficulty === "MEDIUM") {
+      timeFactor = 2;
+    } else if (difficulty === "HARD") {
+      timeFactor = 3;
+    }
   const initialTime = amount * 60 * timeFactor;
 
+  // Function to fetch quiz questions
   const fetchQuiz = async () => {
     try {
       // Construct the URL for fetching quiz questions
@@ -86,14 +58,13 @@ const Quiz = ({ navigation, route }) => {
       }
       const data = await res.json();
       setQuestions(data.quizQuestions);
-      console.log(data.quizQuestions[0]);
-      console.log(data.quizQuestions[1]);
     } catch (error) {
       console.error("Error fetching quiz data:", error);
     }
   };
+  // Function to submit quiz results
   const submitQuiz = async () => {
-    console.log(totalScore, totalTime);
+    // console.log(totalScore, totalTime);
     try {
       const response = await fetch(
         `https://quiz-app-react-native.vercel.app/quiz/update-result/${quizId}`,
@@ -109,11 +80,10 @@ const Quiz = ({ navigation, route }) => {
         }
       );
       const data = await response.json();
-      console.log(data);
       // If updating quiz result is successful
       if (response.ok) {
-        console.log(data);
-      } else {
+        navigation.navigate("Home")
+      }else{
         // If there's an error, display a message to the user
         console.error("Error:", data.message);
         // You can display an alert or set a state to show an error message on the UI
@@ -125,91 +95,13 @@ const Quiz = ({ navigation, route }) => {
     }
   };
 
+  //* useEffects *//
   useEffect(() => {
-    fetchQuiz();
-    // setCurrentIndex(currentIndex+1);
-    setTimeLeft(initialTime);
-    setTotalTime(0);
-    console.log(amount);
-  }, [reset]); // Fetch questions when the component mounts
-
-  const onSelectOption = (questionIndex, optionId) => {
-    const updatedQuestions = questions.map((question, index) => {
-      if (index === questionIndex) {
-        return {
-          ...question,
-          selectedOption: optionId,
-        };
-      }
-      return question;
-    });
-    setQuestions(updatedQuestions);
-  };
-
-  const getTextScore = () => {
-    let score = 0;
-    questions.forEach((question) => {
-      if (question.selectedOption === question.answer_id) {
-        score += question.marks; // Assuming each correct answer adds the question's marks to the score
-      }
-    });
-    return score;
-  };
-
-  const reset = () => {
-    fetchQuiz(); // Fetch quiz questions when reset button is pressed
-    setTimeLeft(initialTime);
-    setBackgroundColorIndex(0);
-  };
-
-  const handleNext = () => {
-    if (currentIndex < questions.length) {
-      listRef.current.scrollToIndex({
-        animated: true,
-        index: currentIndex,
-        viewPosition: 0.5, // Ensures the item is centered after scroll
-        onComplete: () => {
-          setCurrentIndex((prevIndex) => prevIndex + 1);
-        },
-      });
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentIndex > 1) {
-      listRef.current.scrollToIndex({
-        animated: true,
-        index: currentIndex - 2,
-        viewPosition: 0.5,
-        onComplete: () => setCurrentIndex((prevIndex) => prevIndex - 1),
-      });
-    }
-  };
-
-  const handleSubmit = () => {
-    const totalTimeTaken = initialTime - timeLeft;
-    setTotalScore(getTextScore());
-    setModalVisible(true);
-    setTotalTime(totalTimeTaken);
-  };
-
-  useEffect(() => {
-    //   // Calculate initial time based on difficulty level and number of questions
-    // let timeFactor = 1; // Default time factor for easy difficulty
-    // if (difficulty === 'medium') {
-    //   timeFactor = 2;
-    // } else if (difficulty === 'hard') {
-    //   timeFactor = 3;
-    // }
-    // initialTime = (amount) * 60 * timeFactor; // Convert minutes to seconds
-
     // Timer logic
     const timer = setTimeout(() => {
       if (timeLeft > 0) {
         setTimeLeft(timeLeft - 1);
       } else {
-        // Time's up, navigate to the result screen
-        // navigation.navigate("Result", { score });
         setTimeLeft(0); // Set timeLeft to 0 when time ends
         handleSubmit(); // Automatically submit answers when time ends
       }
@@ -225,6 +117,86 @@ const Quiz = ({ navigation, route }) => {
     };
   }, [timeLeft, currentIndex]);
 
+  useEffect(() => {
+    fetchQuiz();
+    setTimeLeft(initialTime);
+    setTotalTime(0);
+    // console.log(amount);
+  }, [reset]); // Fetch questions when the component mounts
+
+
+  // Function to change background color
+  const changeBackgroundColor = () => {
+    setBackgroundColorIndex(
+      (prevIndex) => (prevIndex + 1) % backgroundColors.length
+    );
+  };
+  // Function to handle option selection
+  const onSelectOption = (questionIndex, optionId) => {
+    const updatedQuestions = questions.map((question, index) => {
+      if (index === questionIndex) {
+        return {
+          ...question,
+          selectedOption: optionId,
+        };
+      }
+      return question;
+    });
+    setQuestions(updatedQuestions);
+  };
+  // Function to handle next question  
+  const handleNext = () => {
+    if (currentIndex < questions.length) {
+      listRef.current.scrollToIndex({
+        animated: true,
+        index: currentIndex,
+        viewPosition: 0.5, // Ensures the item is centered after scroll
+        onComplete: () => {
+          setCurrentIndex((prevIndex) => prevIndex + 1);
+        },
+      });
+    }
+  };
+  // Function to handle previous question
+  const handlePrevious = () => {
+    if (currentIndex > 1) {
+      listRef.current.scrollToIndex({
+        animated: true,
+        index: currentIndex - 2,
+        viewPosition: 0.5,
+        onComplete: () => setCurrentIndex((prevIndex) => prevIndex - 1),
+      });
+    }
+  };
+  // Function to handle quiz submission
+  const handleSubmit = () => {
+    const totalTimeTaken = initialTime - timeLeft;
+    setTotalScore(getTextScore());
+    setModalVisible(true);
+    setTotalTime(totalTimeTaken);
+  };
+  // Function to calculate total score
+  const getTextScore = () => {
+    let score = 0;
+    questions.forEach((question) => {
+      if (question.selectedOption === question.answer_id) {
+        score += question.marks; // Assuming each correct answer adds the question's marks to the score
+      }
+    });
+    return score;
+  };
+  // Function to reset quiz
+  const reset = () => {
+    fetchQuiz(); // Fetch quiz questions when reset button is pressed
+    setTimeLeft(initialTime);
+    setBackgroundColorIndex(0);
+  };
+  // Function to toggle the explanation modal
+  const toggleExplanationModal = () => {
+    setShowExplanation(!showExplanation);
+  };
+
+  
   return (
     <View
       style={[
@@ -325,6 +297,8 @@ const Quiz = ({ navigation, route }) => {
           )}
         />
       </View>
+
+      {/* Timer */}
       <View
         style={{
           justifyContent: "center",
@@ -340,7 +314,8 @@ const Quiz = ({ navigation, route }) => {
                 .padStart(2, "0")}`}
         </Text>
       </View>
-
+      
+      {/* Navigation Buttons */}
       <View
         style={{
           flexDirection: "row",
@@ -361,7 +336,10 @@ const Quiz = ({ navigation, route }) => {
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={handlePrevious}
+          onPress={() => {
+            handlePrevious();
+            changeBackgroundColor();
+          }}
         >
           <Text style={{ color: "#fff" }}>Previous</Text>
         </TouchableOpacity>
@@ -389,7 +367,8 @@ const Quiz = ({ navigation, route }) => {
           </Text>
         </TouchableOpacity>
       </View>
-
+      
+      {/* Result & Explanation Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -466,7 +445,6 @@ const Quiz = ({ navigation, route }) => {
                     onPress={() => {
                       setModalVisible(false);
                       submitQuiz();
-                      navigation.navigate("Home");
                     }}
                   >
                     <Icon
@@ -499,7 +477,6 @@ const Quiz = ({ navigation, route }) => {
                       toggleExplanationModal();
                     }}
                   >
-                    {/* <Text style={styles.icon}>Explanation</Text> */}
                     <Icon
                       name="list-outline"
                       size={30}
@@ -511,18 +488,24 @@ const Quiz = ({ navigation, route }) => {
               </View>
             ) : (
               // Question and Answer Modal Content
-              <View style={{
+              <View
+                style={{
                   justifyContent: "center",
                   alignItems: "left",
                   margin: 30,
-                }}>
-                  <Text style={{fontSize: 30,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 30,
                     fontWeight: "800",
-                    // alignItems: "left",
                     marginTop: 10,
                     marginBottom: 10,
-                    marginLeft: 7
-                    }}>Explanaton</Text>
+                    marginLeft: 7,
+                  }}
+                >
+                  Explanaton
+                </Text>
                 <TouchableOpacity
                   onPress={toggleExplanationModal}
                   style={{ position: "absolute", top: 15, right: 10 }}
@@ -534,11 +517,27 @@ const Quiz = ({ navigation, route }) => {
                     <Text style={styles.explanationText}>
                       Question: {question.question}
                     </Text>
-                    <Text style={[{marginLeft:10, color:'green'}]}>
+                    <Text style={[{ marginLeft: 10, color: "green" }]}>
                       Answer: {question.answer_text}
                     </Text>
-                    <Text style={[{marginLeft:10, color: question.selectedOption === question.answer_id ? 'green' : 'red' }]}>
-                      Selected Option: {question.options.find(option => option.option_id === question.selectedOption)?.option_text}
+                    <Text
+                      style={[
+                        {
+                          marginLeft: 10,
+                          color:
+                            question.selectedOption === question.answer_id
+                              ? "green"
+                              : "red",
+                        },
+                      ]}
+                    >
+                      Selected Option:{" "}
+                      {
+                        question.options.find(
+                          (option) =>
+                            option.option_id === question.selectedOption
+                        )?.option_text
+                      }
                     </Text>
                   </View>
                 ))}
@@ -551,12 +550,11 @@ const Quiz = ({ navigation, route }) => {
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     paddingTop: 20,
-    // paddingHorizontal: 20,
     height: "100%",
-    // backgroundColor: "#F94144",
   },
   options: {
     marginVertical: 16,

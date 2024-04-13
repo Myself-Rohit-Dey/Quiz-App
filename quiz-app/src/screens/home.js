@@ -7,71 +7,38 @@ import {
   StyleSheet,
   ScrollView,
   Animated,
-  // RefreshControl
+  RefreshControl,
 } from "react-native";
 import Title from "../components/title";
 import { useAuth } from "../context/authContext";
-// import QuizService from "../services/api";
 
 const Home = ({ navigation, route }) => {
-  const [scrollY] = useState(new Animated.Value(0));
-  const { user, logout } = useAuth();
-  const [quizzes, setQuizzes] = useState([]);
-  // const [refreshing, setRefreshing] = useState(false);
-  // const [userName, setUserName] = useState("");
-  // const userData = route.params.userData;
-  // const { token } = useToken();
+  const [scrollY] = useState(new Animated.Value(0)); // Initialize scrollY as an Animated value
+  const { user, logout } = useAuth(); // Get user data and logout function from authContext
+  const [quizzes, setQuizzes] = useState([]); // State to hold quizzes data
+  const [refreshing] = useState(false); // State to handle refreshing indicator
 
-  // useEffect(() => {
-  //   console.log('Token:', token);
-  // }, [token]);
+  // Interpolating opacity and scale based on scroll position
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+  const imageScale = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [1, 0.5],
+    extrapolate: "clamp",
+  });
 
-  // useEffect(() => {
-  //   // Fetch user details using auth token //Future Implementation
-  //   // const fetchUserData = async () => {
-  //   //   try {
-  //   //     // Send a GET request to fetch user details
-  //   //     const response = await fetch('https://tame-colts-allow.loca.lt/user', {
-  //   //       method: 'GET',
-  //   //       headers: {
-  //   //         'Authorization': `Bearer ${token}`, // Replace YOUR_AUTH_TOKEN with the actual auth token
-  //   //         'Content-Type': 'application/json',
-  //   //       },
-  //   //     });
-  //   //     const userData = await response.json();
-  //   //     if (userData.success) {
-  //   //       // Extract user name from user data
-  //   //       setUserName(userData.user.name); // Assuming user name is stored in 'name' field
-  //   //     } else {
-  //   //       console.error('Failed to fetch user details:', userData.message);
-  //   //     }
-  //   //   } catch (error) {
-  //   //     console.error('Error fetching user details:', error);
-  //   //   }
-  //   // };
-
-  //   // fetchUserData(); // Fetch user data when component mounts
-  //   // console.log(user.id);
-  //   // Fetch data from the API endpoint
-
-  //   console.log(user);
-  //   // Add listener for scroll animation if needed
-  //   const listener = scrollY.addListener(({ value }) => {
-  //     // Your custom logic if needed
-  //   });
-  //   return () => {
-  //     scrollY.removeListener(listener);
-  //   };
-  // }, [scrollY, user]);
   useEffect(() => {
+    // Fetch quizzes when user data changes
     fetchQuizzes();
   }, [user]);
 
+  // Function to fetch quizzes data from the API
   const fetchQuizzes = () => {
     if (user) {
-      fetch(
-        `https://quiz-app-react-native.vercel.app/result/${user.id}`
-      )
+      fetch(`https://quiz-app-react-native.vercel.app/result/${user.id}`)
         .then((response) => response.json())
         .then((data) => {
           setQuizzes(data); // Update state with fetched data
@@ -82,171 +49,143 @@ const Home = ({ navigation, route }) => {
     }
   };
 
+  // Function to handle refresh action
   const onRefresh = () => {
-    // setRefreshing(true);
-    fetchQuizzes();
-    // setRefreshing(false);
+    fetchQuizzes(); // Re-fetch quizzes data
   };
 
+  // Function to navigate to the quiz screen
   const startQuiz = () => {
-    // Navigate to the quiz screen
     navigation.navigate("Option");
   };
+
+  // Function to handle logout
   const handleLogOut = () => {
-    // navigation.navigate("Start");
     logout();
   };
+
+  // Function to navigate to the login screen
   const handleLogin = () => {
-    // Navigate to the login screen
     navigation.navigate("Login");
   };
 
+  // Function to navigate to the register screen
   const handleRegister = () => {
-    // Navigate to the register screen
     navigation.navigate("Register");
   };
-  const handleAdmin = () => {
-    navigation.navigate("Admin");
-  };
 
-  // Static data for the cards
-  // const cardData = [
-  //   {
-  //     score: 100,
-  //     time: "05:00min",
-  //     imageUrl:
-  //       "https://ugokawaii.com/wp-content/uploads/2022/12/quiz-time.gif",
-  //   },
-  //   {
-  //     score: 20,
-  //     time: "04:59min",
-  //     imageUrl:
-  //       "https://ugokawaii.com/wp-content/uploads/2022/12/quiz-time.gif",
-  //   },
-  //   {
-  //     score: 30,
-  //     time: "02:38min",
-  //     imageUrl:
-  //       "https://ugokawaii.com/wp-content/uploads/2022/12/quiz-time.gif",
-  //   },
-  //   // Add more objects for additional cards
-  // ];
+  // Function to navigate to the admin screen if user is admin
+  const handleAdmin = () => {
+    if (user.role == "ADMIN") {
+      navigation.navigate("Admin");
+    } else {
+      navigation.navigate("ErrorPage"); // Navigate to ErrorPage if user is not admin
+    }
+  };
 
   return (
     <>
-      {user ? (
+      {user ? ( // If user is logged in
         <View style={styles.container}>
           <ScrollView
             style={styles.scrollView}
-            onScroll={Animated.event(
+            onScroll={Animated.event( // Listen to scroll events
               [{ nativeEvent: { contentOffset: { y: scrollY } } }],
               { useNativeDriver: false }
             )}
             scrollEventThrottle={16}
-            // refreshControl={
-            //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            // }
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
-            <Animated.View
+            {imageOpacity.__getValue() > 0 && ( // Render image with animation if opacity is greater than 0
+              <Animated.View
+                style={{
+                  opacity: imageOpacity,
+                  transform: [{ scale: imageScale }],
+                }}
+              >
+                <View style={styles.imageContainer}>
+                  <View style={styles.bannerContainer}>
+                    <Image
+                      source={{
+                        uri: "https://ugokawaii.com/wp-content/uploads/2022/12/quiz-time.gif",
+                      }}
+                      style={styles.banner}
+                      resizeMode="contain"
+                    />
+                  </View>
+                </View>
+              </Animated.View>
+            )}
+            <Animated.View // View containing user's name and start button
               style={{
-                opacity: scrollY.interpolate({
-                  inputRange: [0, 50],
-                  outputRange: [1, 0],
-                  extrapolate: "clamp",
-                }),
+                paddingTop: 20,
               }}
             >
               <Title firstName={user.first_name} />
-              {/* <Text style={styles.userName}>{userName ? `Welcome, ${userName}!` : ''}</Text> */}
             </Animated.View>
-            <View style={styles.imageContainer}>
-              <View style={styles.bannerContainer}>
-                <Image
-                  source={{
-                    uri: "https://ugokawaii.com/wp-content/uploads/2022/12/quiz-time.gif",
-                  }}
-                  style={styles.banner}
-                  resizeMode="contain"
-                />
-              </View>
-            </View>
             <TouchableOpacity onPress={startQuiz} style={styles.button}>
               <Text style={styles.buttonText}>Start</Text>
             </TouchableOpacity>
             <View style={styles.cardContainer}>
-              <>
-                {quizzes.length > 0 ? (
-                  quizzes.map((quiz, index) => (
-                    <View key={index} style={styles.card}>
-                      {/* Rounded rectangle container for the topic */}
-                      <View style={styles.topicContainer}>
-                        <Text style={styles.topicText}>{quiz.title} ( {quiz.difficulty.toLowerCase()} )</Text>
-                      </View>
-                      {/* Rest of the card content */}
-                      <View
-                        style={{
-                          justifyContent: "space-between",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          paddingHorizontal: 20,
-                          paddingTop: 40,
-                        }}
-                      >
-                        <Text style={{ color: "white", fontWeight: "800" }}>
-                          Score
-                        </Text>
-                        <Text style={{ color: "white", fontWeight: "800" }}>
-                          {quiz.total_marks}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          alignItems: "flex-end",
-                          paddingTop: 10,
-                          paddingRight: 20,
-                        }}
-                      >
-                        <Text style={{ color: "white" }}>
-                          Time: {quiz.time}
-                        </Text>
-                      </View>
-                      <View style={styles.imageOverlay}>
-                        <Image
-                          source={{
-                            uri: "https://lordicon.com/icons/wired/outline/1103-confetti.gif",
-                          }}
-                          style={styles.cardImage}
-                          resizeMode="cover"
-                        />
-                      </View>
+              {quizzes.length > 0 ? ( // Render quizzes if available
+                quizzes.map((quiz, index) => (
+                  <View key={index} style={styles.card}>
+                    <View style={styles.topicContainer}>
+                      <Text style={styles.topicText}>
+                        {quiz.title} ( {quiz.difficulty.toLowerCase()} )
+                      </Text>
                     </View>
-                  ))
-                ) : (
-                  <Text style={{ paddingVertical: 40 }}>
-                    No quizzes available
-                  </Text>
-                )}
-              </>
-              {/* {quizzes.length > 0 && ( */}
-                <View
-                  style={{
-                    padding: 10,
-                    borderWidth: 1,
-                    borderRadius: 10,
-                    marginBottom: 20,
-                  }}
-                >
-                  <TouchableOpacity onPress={onRefresh}>
-                    <Text>Refresh</Text>
-                  </TouchableOpacity>
-                </View>
-              {/* )} */}
-
+                    <View
+                      style={{
+                        justifyContent: "space-between",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        paddingHorizontal: 20,
+                        paddingTop: 40,
+                      }}
+                    >
+                      <Text style={{ color: "white", fontWeight: "800" }}>
+                        Score
+                      </Text>
+                      <Text style={{ color: "white", fontWeight: "800" }}>
+                        {quiz.total_marks}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        alignItems: "flex-end",
+                        paddingTop: 10,
+                        paddingRight: 20,
+                      }}
+                    >
+                      <Text style={{ color: "white" }}>Time: {quiz.time}</Text>
+                    </View>
+                    <View style={styles.imageOverlay}>
+                      <Image
+                        source={{
+                          uri: "https://lordicon.com/icons/wired/outline/1103-confetti.gif",
+                        }}
+                        style={styles.cardImage}
+                        resizeMode="cover"
+                      />
+                    </View>
+                  </View>
+                ))
+              ) : (
+                <Text style={{ paddingVertical: 40 }}>
+                  No quizzes available
+                </Text>
+              )}
               <View style={styles.bottom}>
-                <TouchableOpacity style={styles.button2} onPress={handleLogOut}>
+                <TouchableOpacity
+                  style={styles.button2}
+                  onPress={handleLogOut}
+                >
                   <Text style={styles.buttonText2}>Logout</Text>
                 </TouchableOpacity>
-                {user.role == "ADMIN" && (
+                {user.role == "ADMIN" && ( // Render admin button if user is admin
                   <TouchableOpacity
                     style={styles.button2}
                     onPress={handleAdmin}
@@ -258,11 +197,10 @@ const Home = ({ navigation, route }) => {
             </View>
           </ScrollView>
         </View>
-      ) : (
+      ) : ( // If user is not logged in
         <View style={styles.containerSecondary}>
           <Title />
           <View style={styles.topSecondary}>
-            {/* <View style={styles.quoteContainer}> */}
             <View style={styles.imageContainerSecondary}>
               <View style={styles.bannerContainerSecondary}>
                 <Image
@@ -278,7 +216,6 @@ const Home = ({ navigation, route }) => {
               "Quizzes are a fun and interactive way to test your knowledge and
               learn new things."
             </Text>
-            {/* </View> */}
           </View>
           <View style={styles.bottomSecondary}>
             <TouchableOpacity
@@ -303,6 +240,7 @@ const Home = ({ navigation, route }) => {
 export default Home;
 
 const styles = StyleSheet.create({
+  // Primary styles
   container: {
     flex: 1,
   },

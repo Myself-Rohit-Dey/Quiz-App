@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useAuth } from "../context/authContext";
 import { Table, Row } from "react-native-reanimated-table";
@@ -87,32 +93,37 @@ const Dashboard = () => {
       <View style={{ justifyContent: "center", textAlign: "center" }}>
         {/* Display quizzes */}
         {activeSection === "Quizzes" && (
-          <Table borderStyle={{ borderWidth: 0.5, borderColor: "#000" }}>
-            <Row
-              data={[
-                "Title",
-                "Difficulty",
-                "No. of Questions",
-                "Total Marks",
-                "Time",
-              ]}
-              style={styles.head}
-              textStyle={styles.text}
-            />
-            {quizzes.map((quiz) => (
+          <View style={styles.tableContainer}>
+            <Table borderStyle={{ borderWidth: 0.5, borderColor: "#000" }}>
               <Row
-                key={quiz.id}
                 data={[
-                  quiz.title,
-                  quiz.difficulty,
-                  quiz.no_of_question.toString(),
-                  quiz.total_marks.toString(),
-                  quiz.time,
+                  "Title",
+                  "Difficulty",
+                  "No. of     Questions",
+                  "Total Marks",
+                  "Time",
                 ]}
-                textStyle={styles.rowText}
+                style={styles.head}
+                textStyle={styles.text}
               />
-            ))}
-          </Table>
+              {quizzes.map((quiz) => {
+                const [hours, minutes, seconds] = quiz.time.split(":");
+                return (
+                  <Row
+                    key={quiz.id}
+                    data={[
+                      quiz.title,
+                      quiz.difficulty,
+                      quiz.no_of_question.toString(),
+                      quiz.total_marks.toString(),
+                      `${minutes}m ${seconds}s`,
+                    ]}
+                    textStyle={styles.text}
+                  />
+                );
+              })}
+            </Table>
+          </View>
         )}
 
         {/* Filter quizzes based on title and number of questions */}
@@ -143,32 +154,34 @@ const Dashboard = () => {
               <Text style={styles.filterButtonText}>Apply Filter</Text>
             </TouchableOpacity>
             {/* Table to display filtered quizzes */}
-            <Table borderStyle={{ borderWidth: 0.5, borderColor: "#000" }}>
-              <Row
-                data={[
-                  "Title",
-                  "Difficulty",
-                  "No. of Questions",
-                  "Total Marks",
-                  "Time",
-                ]}
-                style={styles.head}
-                textStyle={styles.text}
-              />
-              {filteredQuizzes.map((quiz) => (
+            <View style={styles.tableContainer}>
+              <Table borderStyle={{ borderWidth: 0.5, borderColor: "#000" }}>
                 <Row
-                  key={quiz.id}
                   data={[
-                    quiz.title,
-                    quiz.difficulty,
-                    quiz.no_of_question.toString(),
-                    quiz.total_marks.toString(),
-                    quiz.time,
+                    "Title",
+                    "Difficulty",
+                    "No. of    Questions",
+                    "Total Marks",
+                    "Time",
                   ]}
-                  textStyle={styles.rowText}
+                  style={styles.head}
+                  textStyle={styles.text}
                 />
-              ))}
-            </Table>
+                {filteredQuizzes.map((quiz) => (
+                  <Row
+                    key={quiz.id}
+                    data={[
+                      quiz.title,
+                      quiz.difficulty,
+                      quiz.no_of_question.toString(),
+                      quiz.total_marks.toString(),
+                      quiz.time,
+                    ]}
+                    textStyle={styles.rowText}
+                  />
+                ))}
+              </Table>
+            </View>
           </View>
         )}
       </View>
@@ -236,7 +249,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    paddingLeft:7
+    paddingLeft: 7,
   },
   filterButton: {
     backgroundColor: "#3498db",
@@ -251,5 +264,11 @@ const styles = StyleSheet.create({
   filterButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  tableContainer: {
+    backgroundColor: "#fff",
+    elevation: 12,
+    marginBottom: 10,
+    overflow: 'hidden',
   },
 });

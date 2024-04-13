@@ -6,11 +6,12 @@ import Icon from "react-native-vector-icons/Ionicons"; // Import Ionicons from t
 import Toast from 'react-native-toast-message';
 
 const Login = ({ navigation }) => {
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [hidePassword, setHidePassword] = useState(true);
+  const { login } = useAuth(); // Access the login function from authContext
+  const [email, setEmail] = useState(''); // State for email input field
+  const [password, setPassword] = useState(''); // State for password input field
+  const [hidePassword, setHidePassword] = useState(true); // State to toggle password visibility
 
+  // Function to handle login
   const handleLogin = async () => {
     try {
       const response = await fetch('https://quiz-app-react-native.vercel.app/login', {
@@ -25,42 +26,40 @@ const Login = ({ navigation }) => {
       });
       const data = await response.json();
       const userData = data.user;
-      console.log(data.user);
-      // If login is successful, navigate to home screen
-      
-      // if (response.ok) {
-      if (data.success==true) {
+      if (data.success==true) { // If login is successful
+        // Show success toast message
         Toast.show({
           type: "success",
           text1: data.message,
           visibilityTime: 2000,
           autoHide: true,
-          position: 'bottom',
         });
-        login(userData);
-        navigation.navigate('Home');
+        login(userData); // Call the login function with user data
+        navigation.navigate('Home'); // Navigate to Home screen
       } else {
+        // Show error toast message
         Toast.show({
           type: "error",
           text1: data.message,
           visibilityTime: 2000,
           autoHide: true,
-          position: 'bottom',
         });
-        // If there's an error, display a message to the user
-        console.error('Error logging in:', error.message); // Corrected to error.message
-        // You can display an alert or set a state to show an error message on the UI
       }
     } catch (error) {
-      console.error('Error logging in:', error);
-      // Display an error message or alert to the user
-      // navigation.navigate('ErrorPage');
+      // Show error toast message if an error occurs
+      Toast.show({
+        type: "error",
+        text1: error,
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
   return (
     <View style={styles.container}>
       <Title />
+      {/* Email input field */}
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -68,6 +67,7 @@ const Login = ({ navigation }) => {
         onChangeText={(text) => setEmail(text.toLowerCase())}
         keyboardType="email-address"
       />
+      {/* Password input field */}
       <View style={styles.passwordInputContainer}>
         <TextInput
           style={styles.passwordInput}
@@ -76,11 +76,14 @@ const Login = ({ navigation }) => {
           onChangeText={setPassword}
           secureTextEntry={hidePassword} // Use secureTextEntry based on hidePassword state
         />
+        {/* Toggle password visibility button */}
         <TouchableOpacity onPress={() => setHidePassword(!hidePassword)} style={styles.eyeIcon}>
           <Icon name={hidePassword ? 'eye-off' : 'eye'} size={24} color="gray" />
         </TouchableOpacity>
       </View>
+      {/* Login button */}
       <Button title="Login" onPress={handleLogin} />
+      {/* Register link */}
       <View style={styles.registerContainer}>
         <Text>Don't have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
