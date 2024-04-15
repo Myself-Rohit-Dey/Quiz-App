@@ -99,7 +99,7 @@ const Option = ({ navigation }) => {
         </View>
         {/* Category picker */}
         <View style={styles.pickerContainer}>
-          <Text>Category:</Text>
+          <Text style={{color:'white',fontWeight:'bold'}}>Category:</Text>
           <View style={styles.picker}>
             <Picker
               selectedValue={category}
@@ -113,7 +113,7 @@ const Option = ({ navigation }) => {
         </View>
         {/* Difficulty picker */}
         <View style={styles.pickerContainer}>
-          <Text>Difficulty:</Text>
+          <Text style={{color:'white',fontWeight:'bold'}}>Difficulty:</Text>
           <View style={styles.picker}>
             <Picker
               selectedValue={difficulty}
@@ -127,7 +127,7 @@ const Option = ({ navigation }) => {
         </View>
         {/* Number of questions input */}
         <View style={styles.pickerContainer}>
-          <Text>Number of Questions:</Text>
+          <Text style={{color:'white', fontWeight:'bold'}}>Number of Questions:</Text>
           <View style={styles.input}>
             <TextInput
               value={amount}
@@ -192,12 +192,14 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
+    borderColor: "rgba(255,255,255,0.8)",
+    borderRadius: 25,
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginTop: 5,
     marginLeft: 10,
+    backgroundColor:"rgba(255,255,255,0.6)",
+    elevation:30
   },
   pickerContainer: {
     flexDirection: "row",
@@ -207,10 +209,12 @@ const styles = StyleSheet.create({
   picker: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
+    borderColor: "rgba(255,255,255,0.8)",
+    borderRadius: 25,
     marginTop: 5,
     marginLeft: 10,
+    backgroundColor:"rgba(255,255,255,0.6)",
+    elevation:30
   },
   button: {
     backgroundColor: "#F8961E",

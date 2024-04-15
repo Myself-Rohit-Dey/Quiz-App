@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 app.get("/admin/analytics/get-all-quizzes", (req, res) => {
   try {
     // Query to fetch all users
-    const query = `SELECT q.*, u.id AS user_id, u.first_name, u.last_name
+    const query = `SELECT q.*, u.first_name, u.last_name
     FROM quiz q
     JOIN user u ON q.user_id = u.id
     ORDER BY q.id DESC`;
