@@ -54,9 +54,9 @@ nodemon server.mjs
 
 1. Create a account and deploy the server on Vercel or render for free
 
-2. For Hosting Database you can use Clever Cloud.
+2. For Hosting Database you can use Clever-Cloud.
 
-3. Bulid the apk using EAS builds from Expo by creating a documentation and following documentation : https://docs.expo.dev/build/introduction/
+3. Bulid the apk using EAS builds from Expo by creating a account and following documentation : https://docs.expo.dev/build/introduction/
 
 ## Usage
 
