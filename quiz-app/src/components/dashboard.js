@@ -18,9 +18,9 @@ const Dashboard = () => {
   const [filterNumQuestions, setFilterNumQuestions] = useState(""); // State to store the filter for number of questions
 
   // Fetch quizzes from the API when component mounts or user changes
-  useEffect(() => {
-    fetchQuizzes();
-  }, [user]);
+  // useEffect(() => {
+  //   fetchQuizzes();
+  // }, []);
 
   // Function to fetch quizzes from the API
   const fetchQuizzes = async () => {
@@ -33,6 +33,7 @@ const Dashboard = () => {
       }
       const data = await response.json();
       setQuizzes(data.quizzes);
+      console.log("fetched")
     } catch (error) {
       console.error("Error fetching quizzes:", error);
     }
@@ -53,12 +54,12 @@ const Dashboard = () => {
   };
 
   // Component for feature box with icon and name
-  const PressableFeatureBox = ({ name, icon, onPress }) => (
-    <TouchableOpacity onPress={onPress} style={styles.featureBox}>
-      <Icon name={icon} size={50} color="#3498db" />
-      <Text style={styles.featureName}>{name}</Text>
-    </TouchableOpacity>
-  );
+  // const PressableFeatureBox = ({ name, icon, onPress }) => (
+  //   <TouchableOpacity onPress={onPress} style={styles.featureBox}>
+  //     <Icon name={icon} size={50} color="#3498db" />
+  //     <Text style={styles.featureName}>{name}</Text>
+  //   </TouchableOpacity>
+  // );
 
   return (
     <View style={styles.container}>
@@ -73,21 +74,41 @@ const Dashboard = () => {
       </View>
       <View style={styles.featuresContainer}>
         {/* Feature box for displaying all quizzes */}
-        <PressableFeatureBox
+        {/* <PressableFeatureBox
           name="All Quizzes"
           icon="chatbubbles-sharp"
           onPress={() => {
             setActiveSection("Quizzes");
             setFilterTitle(""); // Reset filter title
             setFilterNumQuestions(""); // Reset filter number of questions
+            fetchQuizzes();
           }}
-        />
+        /> */}
+        <TouchableOpacity style={styles.featureBox}onPress={() => {
+            fetchQuizzes();
+            setActiveSection("Quizzes");
+            setFilterTitle(""); // Reset filter title
+            setFilterNumQuestions(""); // Reset filter number of questions
+          }}>
+          <Icon name="chatbubbles-sharp" size={50} color="#3498db" />
+          <Text style={styles.featureName}>All Quizzes</Text>
+        </TouchableOpacity>
         {/* Feature box for filtering quizzes */}
-        <PressableFeatureBox
+        {/* <PressableFeatureBox
           name="Filter"
           icon="layers-sharp"
-          onPress={() => setActiveSection("Filter")}
-        />
+          onPress={() =>{ 
+            setActiveSection("Filter");
+            fetchQuizzes();
+          }}
+        /> */}
+        <TouchableOpacity style={styles.featureBox} onPress={() =>{ 
+            fetchQuizzes();
+            setActiveSection("Filter");
+          }}>
+          <Icon name="layers-sharp" size={50} color="#3498db" />
+          <Text style={styles.featureName}>Filter</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={{ justifyContent: "center", textAlign: "center" }}>
@@ -97,6 +118,7 @@ const Dashboard = () => {
             <Table borderStyle={{ borderWidth: 0.5, borderColor: "#000" }}>
               <Row
                 data={[
+                  "Name",
                   "Title",
                   "Difficulty",
                   "No. of     Questions",
@@ -112,6 +134,7 @@ const Dashboard = () => {
                   <Row
                     key={quiz.id}
                     data={[
+                      `${quiz.first_name} ${quiz.lastName}`,
                       quiz.title,
                       quiz.difficulty,
                       quiz.no_of_question.toString(),

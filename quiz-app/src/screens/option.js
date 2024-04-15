@@ -11,6 +11,7 @@ import {
 import { Picker } from "@react-native-picker/picker"; // Import Picker component
 import Title from "../components/title";
 import { useAuth } from "../context/authContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Option = ({ navigation }) => {
   const [amount, setAmount] = useState("3"); // State for number of questions
@@ -80,6 +81,9 @@ const Option = ({ navigation }) => {
   }, [quizId, navigation]);
 
   return (
+    <LinearGradient
+      colors={['#FFFFFf','#aff2d8', '#1f7ea1', '#000000']}
+    >
     <ScrollView style={styles.container}>
       <Title />
       <View style={styles.options}>
@@ -151,7 +155,8 @@ const Option = ({ navigation }) => {
       <TouchableOpacity onPress={startQuiz} style={styles.button}>
         <Text style={styles.buttonText}>Start</Text>
       </TouchableOpacity>
-    </ScrollView>
+     </ScrollView>
+    </LinearGradient>
   );
 };
 

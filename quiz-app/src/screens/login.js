@@ -4,6 +4,7 @@ import Title from '../components/title';
 import { useAuth } from '../context/authContext';
 import Icon from "react-native-vector-icons/Ionicons"; // Import Ionicons from the library
 import Toast from 'react-native-toast-message';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Login = ({ navigation }) => {
   const { login } = useAuth(); // Access the login function from authContext
@@ -57,7 +58,11 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#FFFFFf','#aff2d8', '#1f7ea1', '#000000']}
+      style={styles.container}
+    >
+    {/* <View style={styles.container}> */}
       <Title />
       {/* Email input field */}
       <TextInput
@@ -85,12 +90,13 @@ const Login = ({ navigation }) => {
       <Button title="Login" onPress={handleLogin} />
       {/* Register link */}
       <View style={styles.registerContainer}>
-        <Text>Don't have an account? </Text>
+        <Text style={{color:'white'}}>Don't have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
           <Text style={styles.registerButton}>Register</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    {/* </View> */}
+    </LinearGradient>
   );
 };
 
@@ -103,20 +109,27 @@ const styles = StyleSheet.create({
   input: {
     width: '80%',
     height: 50,
-    borderColor: 'gray',
+    borderColor: 'rgba(255,255,255,0.8)',
     borderWidth: 1,
+    borderRadius:25,
     marginVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
+    backgroundColor:'rgba(255,255,255,0.6)',
+    elevation:30
   },
   passwordInputContainer: {
     width: '80%',
     height: 50,
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: 'gray',
+    borderColor: 'rgba(255,255,255,0.8)',
     borderWidth: 1,
+    borderRadius:25,
     marginVertical: 10,
-    paddingHorizontal: 10,
+    paddingRight: 10,
+    paddingLeft:20,
+    backgroundColor:'rgba(255,255,255,0.6)',
+    
   },
   passwordInput: {
     flex: 1,
@@ -128,10 +141,12 @@ const styles = StyleSheet.create({
   registerContainer: {
     flexDirection: 'row',
     marginTop: 20,
+    
   },
   registerButton: {
     marginLeft: 5,
-    color: 'blue',
+    color: '#30c5d2',
+    fontSize: 16
   },
 });
 

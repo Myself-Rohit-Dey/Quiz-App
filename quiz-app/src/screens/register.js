@@ -12,6 +12,7 @@ import { Picker } from "@react-native-picker/picker";
 import Title from "../components/title";
 import Icon from "react-native-vector-icons/Ionicons"; // Import Ionicons from the library
 import Toast from "react-native-toast-message";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Register = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
@@ -115,7 +116,11 @@ const Register = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#FFFFFf','#aff2d8', '#1f7ea1', '#000000']}
+      style={styles.container}
+    >
+    {/* <View style={styles.container}> */}
       {/* Title Component */}
       <Title />
 
@@ -188,12 +193,13 @@ const Register = ({ navigation }) => {
 
       {/* Login Link */}
       <View style={styles.loginContainer}>
-        <Text>Already have an account? </Text>
+        <Text style={{color:'#ffffff'}}>Already have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={styles.loginButton}>Login</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    {/* </View> */}
+    </LinearGradient>
   );
 };
 
@@ -207,20 +213,27 @@ const styles = StyleSheet.create({
   input: {
     width: "80%",
     height: 50,
-    borderColor: "gray",
+    borderColor: "rgba(255,255,255,0.8)",
     borderWidth: 1,
+    borderRadius:25,
     marginVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
+    backgroundColor:'rgba(255,255,255,0.6)',
+    elevation:30
   },
   passwordInputContainer: {
     width: "80%",
     height: 50,
     flexDirection: "row",
     alignItems: "center",
-    borderColor: "gray",
+    borderColor: "rgba(255,255,255,0.8)",
     borderWidth: 1,
+    borderRadius:25,
     marginVertical: 10,
-    paddingHorizontal: 10,
+    paddingRight: 10,
+    paddingLeft: 20,
+    backgroundColor:'rgba(255,255,255,0.6)',
+    elevation:30
   },
   passwordInput: {
     flex: 1,
@@ -235,13 +248,13 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginLeft: 5,
-    color: "blue",
+    color: "#30c5d2",
   },
   passwordDetails: {
     width: "80%",
     marginVertical: 5,
     fontSize: 12,
-    color: "gray",
+    color: "white",
   },
 });
 

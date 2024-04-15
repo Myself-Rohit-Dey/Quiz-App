@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Title from "../components/title";
 import { useAuth } from "../context/authContext";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Home = ({ navigation, route }) => {
   const [scrollY] = useState(new Animated.Value(0)); // Initialize scrollY as an Animated value
@@ -85,6 +86,10 @@ const Home = ({ navigation, route }) => {
 
   return (
     <>
+    <LinearGradient
+      colors={['#FFFFFf','#aff2d8', '#1f7ea1', '#000000']}
+      style={styles.container}
+    >
       {user ? ( // If user is logged in
         <View style={styles.container}>
           <ScrollView
@@ -171,6 +176,10 @@ const Home = ({ navigation, route }) => {
                         resizeMode="cover"
                       />
                     </View>
+                    {/* <LinearGradient
+                      colors={['transparent', 'rgba(0, 0, 0, 0.4)']} // Adjust the opacity as needed
+                      style={styles.blurOverlay}
+                    /> */}
                   </View>
                 ))
               ) : (
@@ -233,6 +242,11 @@ const Home = ({ navigation, route }) => {
           </View>
         </View>
       )}
+      {/* <LinearGradient
+        colors={['transparent', 'rgba(0, 0, 0, 0.4)']} // Adjust the opacity as needed
+        style={styles.blurOverlay}
+      /> */}
+      </LinearGradient>
     </>
   );
 };
@@ -243,6 +257,17 @@ const styles = StyleSheet.create({
   // Primary styles
   container: {
     flex: 1,
+    // backgroundColor: '#6f7bf7',
+    // backgroundColor: "#6F7BF7",
+    // backgroundColor: "linear-gradient(to bottom right, #9BF8F4, #6F7BF7)",
+    position: 'relative',
+  },
+  blurOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
   },
   scrollView: {
     flex: 1,
@@ -261,6 +286,7 @@ const styles = StyleSheet.create({
     width: 270,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor:'#ffffff'
   },
   imageContainer: {
     width: "100%",
@@ -293,7 +319,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#073B4C",
     position: "relative",
   },
   imageOverlay: {
@@ -381,6 +407,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingHorizontal: 60,
     paddingVertical: 20,
+    color:'white'
   },
   bottomSecondary: {
     width: "100%",

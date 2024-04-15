@@ -17,7 +17,7 @@ const Title = ({ firstName }) => {
       case 'Home':
         // Title for the Home screen, including the user's first name if available
         if (firstName) {
-          return `Welcome ${firstName} 🕵🏻`; // Display the user's first name with a welcome message
+          return `Welcome ${firstName}🕵🏻`; // Display the user's first name with a welcome message
         } else {
           return 'Quiz-App'; // Default title for the Home screen if the user's first name is not available
         }
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 36,
-    fontWeight: '600',
+    fontSize: 40,
+    fontWeight: '800',
     textAlign: 'center',
   },
 });
