@@ -18,10 +18,15 @@ The Quiz App allows users to take quizzes on various topics. It provides feature
 - React Native: for building the mobile application.
 - Node.js: for building the backend server.
 - Express.js: for handling server-side routing and logic.
-- MongoDB: for storing user data and quiz information.
-- JSON Web Tokens (JWT): for user authentication and authorization.
+- MySQL: for storing user data and quiz information.
+
+## Use:
+
+You can get the Apk in the Releases for testing.
 
 ## Installation
+
+### Locally
 
 1. Clone the repository: 
 ```bash
@@ -39,10 +44,19 @@ npx expo start --tunnel --reset-cache
 ```bash
 cd server
 npm install
-npm start
+nodemon server.mjs
 ```
+4. Set up an ngrok for port 3000 creating a account by signup and following ngrok documentation : https://ngrok.com
 
-4. Open the Expo app on your mobile device and scan the QR code to run the app.
+5. Open the Expo app on your mobile device and scan the QR code to run the app.
+
+### Online (Deploy):
+
+1. Create a account and deploy the server on Vercel or render for free
+
+2. For Hosting Database you can use Clever Cloud.
+
+3. Bulid the apk using EAS builds from Expo by creating a documentation and following documentation : https://docs.expo.dev/build/introduction/
 
 ## Usage
 
@@ -55,6 +69,6 @@ npm start
 
 Contributions are welcome! If you have any suggestions or find any issues, please create a GitHub issue or submit a pull request.
 
-## License
+<!-- ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE). -->

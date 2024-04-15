@@ -121,7 +121,7 @@ const Dashboard = () => {
                   "Name",
                   "Title",
                   "Difficulty",
-                  "No. of     Questions",
+                  "No. of Q's",
                   "Total Marks",
                   "Time",
                 ]}
@@ -134,7 +134,7 @@ const Dashboard = () => {
                   <Row
                     key={quiz.id}
                     data={[
-                      `${quiz.first_name} ${quiz.lastName}`,
+                      quiz.last_name,
                       quiz.title,
                       quiz.difficulty,
                       quiz.no_of_question.toString(),
