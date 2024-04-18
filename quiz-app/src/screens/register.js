@@ -178,8 +178,9 @@ const Register = ({ navigation }) => {
       </Text>
 
       {/* Gender Picker */}
+      <View style={styles.pickerContainer}>
       <Picker
-        style={styles.input}
+        style={styles.picker}
         selectedValue={gender}
         onValueChange={(itemValue) => setGender(itemValue)}
       >
@@ -187,7 +188,7 @@ const Register = ({ navigation }) => {
         <Picker.Item label="Male" value="M" />
         <Picker.Item label="Female" value="F" />
       </Picker>
-
+      </View>
       {/* Register Button */}
       <Button title="Register" onPress={handleRegistration} />
 
@@ -241,6 +242,21 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     padding: 10,
+  },
+  pickerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 20,
+    marginHorizontal: 40,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.8)",
+    backgroundColor: "rgba(255,255,255,0.6)",
+    borderRadius: 25,
+    elevation:30
+  },
+  picker: {
+    flex: 1
   },
   loginContainer: {
     flexDirection: "row",

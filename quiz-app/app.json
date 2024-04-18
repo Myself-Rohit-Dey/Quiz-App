@@ -19,8 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/quiz-adaptive-icon-lg.png",
-        "backgroundColor": "transparent"
+        "foregroundImage": "./assets/quiz-adaptive-icon-lg.png"
       },
       "package": "com.myselfrohitdey.quizapp"
     },
